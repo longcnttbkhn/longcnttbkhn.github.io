@@ -1,8 +1,14 @@
 ---
+title: "Hướng dẫn cài Hadoop cluster trên ubuntu 20.04"
 layout: post
-title:  "Hướng dẫn cài Hadoop cluster trên ubuntu 20.04"
-date:   2022-10-01 09:27:10 +0700
-categories: bigdata
+date: 2022-10-01 09:27:10 +0700
+image: /assets/images/markdown.jpg
+headerImage: false
+tag:
+- bigdata
+category: blog
+author: Long Nguyen
+description: Hướng dẫn cài Hadoop cluster trên ubuntu 20.04
 ---
 
 [Apache Hadoop][apache-hadoop] là một dự án phần mềm nguồn mở được sử dụng để xây dựng các hệ thống xử lý dữ liệu lớn, cho phép tính toán phân tán và mở rộng trên các cụm tới hàng ngàn máy tín với khả năng sẵn sàng và chịu lỗi cao. Hiện nay Hadoop đã phát triển trở thành một hệ sinh thái với rất nhiều sản phẩm, dịch vụ khác nhau. Trước đây mình sử dụng [Ambari HDP][hdp] để cài đặt và quản lý Hadoop Ecosystem, công cụ này cho phép tập trung tất cả cấu hình của các dịch Hadoop về một nơi, từ đó dễ dàng quản lý và mở rộng node khi cần. Tuy nhiên từ năm 2021 HDP đã đóng lại để thu phí, tất cả các repository đều yêu cầu tài khoản trả phí để có thể download và cài đặt. Gần đây mình có nhu cầu cần cài đặt hệ thống Hadoop mới, mình quyết định cài tay từng thành phần, tuy sẽ phức tạp và tốn nhiều công sức hơn nhưng mình có thể kiểm soát dễ dàng hơn không bị phụ thuộc vào bên khác, một phần cũng do hệ thống mới chỉ có 3 node nên khối lượng công việc cũng không bị thêm quá nhiều. Toàn bộ quá trình cài đặt mình sẽ ghi chép lại chi tiết trong series các bài viết thuộc chủ đề `bigdata` mọi người chú ý đón đọc nhé!
@@ -19,6 +25,8 @@ categories: bigdata
 ## Mục tiêu <a name="target"></a>
 
 Trong bài viết này mình sẽ cài đặt Hadoop bản mới nhất (3.3.4 vào thời điểm viết bài này) trên 3 node Ubuntu 20.04 và OpenJdk11. Để thuận tiện cho việc setup và thử nghiệm mình sẽ sử dụng Docker để giả lập 3 node này.
+
+---
 
 ## Cài đặt môi trường <a name="environment"></a>
 
@@ -82,6 +90,8 @@ Kiểm tra xem đã ssh được vào hay chưa
 ```sh
 $ ssh <username>@node01
 ```
+
+---
 
 ## Download hadoop và cấu hình <a name="config"></a>
 
@@ -166,6 +176,8 @@ Thiết lập cấu hình cho Hadoop
 </configuration>
 {% endhighlight %}
 
+---
+
 ## Chạy trên 1 node <a name="run-single-node"></a>
 
 Format file trên Name Node
@@ -184,11 +196,12 @@ $ $HADOOP_HOME/sbin/start-all.sh
 Kết quả
 
 - `http://localhost:9870/` hoặc `http://172.20.0.2:9870/`
-![Name Node Web](/images/bigdata/2022-10-01/namenode.png)
+![Name Node Web](/assets/images/blog/bigdata/2022-10-01/namenode.png)
 
 - `http://localhost:8088/` hoặc `http://172.20.0.2:8088/`
-![Yarn](/images/bigdata/2022-10-01/yarn.png)
+![Yarn](/assets/images/blog/bigdata/2022-10-01/yarn.png)
 
+---
 
 ## Thêm node mới vào cụm <a name="add-node"></a>
 
@@ -246,13 +259,15 @@ $ $HADOOP_HOME/sbin/start-all.sh
 Kiểm tra node02 đã được add vào chưa
 
 - `http://localhost:9870/dfshealth.html#tab-datanode`
-![Datanodes](/images/bigdata/2022-10-01/datanodes.png)
+![Datanodes](/assets/images/blog/bigdata/2022-10-01/datanodes.png)
 
 - `http://localhost:8088/cluster/nodes`
-![Yarn nodes](/images/bigdata/2022-10-01/yarn-nodes.png)
+![Yarn nodes](/assets/images/blog/bigdata/2022-10-01/yarn-nodes.png)
 
 Làm tương tự với node03 ta sẽ được cụm 3 node
 > Lưu ý do mình clone node02, node03 từ node01 ban đầu nên không cần add ssh-key của các tài khoản (do đã sử dụng chung một ssh-key). Nếu cài trên hệ thống thật thì cần copy public key từ mỗi account trên namenode và add vào authorized_keys của account tương ứng trên datanode.
+
+---
 
 ## Hướng dẫn sử dụng cơ bản <a name="user-guide"></a>
 
@@ -269,6 +284,8 @@ $ $HADOOP_HOME/sbin/start-all.sh
 ```sh
 $ $HADOOP_HOME/sbin/stop-all.sh
 ```
+
+---
 
 ## Kết luận <a name="conclusion"></a>
 
