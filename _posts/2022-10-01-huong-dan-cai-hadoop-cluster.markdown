@@ -2,7 +2,7 @@
 title: "Hướng dẫn cài Hadoop cluster trên ubuntu 20.04"
 layout: post
 date: 2022-10-01 09:27:10 +0700
-image: /assets/images/markdown.jpg
+image: /assets/images/blog/bigdata/2022-10-01/hadoop-logo.jpeg
 headerImage: false
 tag:
 - bigdata
