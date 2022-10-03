@@ -125,7 +125,7 @@ export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 Cập nhật biến môi trường
 
 ```sh
-$ source /etc/profile.d/hadoop-env.sh
+$ source /etc/bash.bashrc
 ```
 
 Cũng cần cập nhật biến môi trường trong file: `$HADOOP_HOME/etc/hadoop/hadoop-env.sh`
@@ -160,6 +160,14 @@ Thiết lập cấu hình cho Hadoop
         <name>dfs.replication</name>
         <value>1</value>
     </property>
+    <property>
+        <name>dfs.permissions.superusergroup</name>
+        <value>hadoop</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir.perm</name>
+        <value>774</value>
+    </property>
 </configuration>
 {% endhighlight %}
 
@@ -185,6 +193,7 @@ Format file trên Name Node
 ```sh
 $ su hdfs
 [hdfs]$ $HADOOP_HOME/bin/hdfs namenode -format
+$ exit
 ```
 
 Chạy các dịch vụ của Hadoop trên account root

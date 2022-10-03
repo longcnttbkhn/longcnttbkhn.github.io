@@ -21,6 +21,8 @@ resume-external: false
 resume-url: https://google.com/?q=my+resume
 
 url: https://longcnttbkhn.github.io
+plugins:
+  - jekyll-sitemap
 # your url: https://USERNAME.github.io
 
 permalink: /:title/

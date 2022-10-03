@@ -276,6 +276,7 @@ DEPENDENCIES
   jekyll-gist
   jekyll-paginate-v2 (~> 2.0)
   jekyll-seo-tag
+  jekyll-sitemap
   jemoji
   webrick (~> 1.7)
 

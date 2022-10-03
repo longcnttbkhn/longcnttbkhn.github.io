@@ -1,6 +1,7 @@
 ---
 title: About
 layout: page
+sitemap: false
 ---
 ![Profile Image]({% if site.external-image %}{{ site.picture }}{% else %}{{ site.url }}/{{ site.picture }}{% endif %})
 
