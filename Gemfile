@@ -10,5 +10,4 @@ group :jekyll_plugins do
     gem "html-proofer"
     gem 'jekyll-sitemap'
 end
-gem 'jekyll-sitemap'
 gem "webrick", "~> 1.7"
