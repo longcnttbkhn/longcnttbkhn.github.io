@@ -8,12 +8,12 @@ tag:
 - bigdata
 category: blog
 author: Long Nguyen
-description: Hướng dẫn cài Hadoop cluster trên ubuntu 20.04
+description: Trong bài viết này mình sẽ mô tả lại chi tiết quá trình cài đặt, cấu hình Hadoop trên 3 node giả lập bằng Docker. Mình cài Hadoop bản mới nhất (3.3.4) trên hệ điều hành Ubuntu 20.04 và Java 11.
 ---
 
-[Apache Hadoop][apache-hadoop] là một dự án phần mềm nguồn mở được sử dụng để xây dựng các hệ thống xử lý dữ liệu lớn, cho phép tính toán phân tán và mở rộng trên các cụm tới hàng ngàn máy tín với khả năng sẵn sàng và chịu lỗi cao. Hiện nay Hadoop đã phát triển trở thành một hệ sinh thái với rất nhiều sản phẩm, dịch vụ khác nhau. Trước đây mình sử dụng [Ambari HDP][hdp] để cài đặt và quản lý Hadoop Ecosystem, công cụ này cho phép tập trung tất cả cấu hình của các dịch Hadoop về một nơi, từ đó dễ dàng quản lý và mở rộng node khi cần. Tuy nhiên từ năm 2021 HDP đã đóng lại để thu phí, tất cả các repository đều yêu cầu tài khoản trả phí để có thể download và cài đặt. Gần đây mình có nhu cầu cần cài đặt hệ thống Hadoop mới, mình quyết định cài tay từng thành phần, tuy sẽ phức tạp và tốn nhiều công sức hơn nhưng mình có thể kiểm soát dễ dàng hơn không bị phụ thuộc vào bên khác, một phần cũng do hệ thống mới chỉ có 3 node nên khối lượng công việc cũng không bị thêm quá nhiều. Toàn bộ quá trình cài đặt mình sẽ ghi chép lại chi tiết trong series các bài viết thuộc chủ đề `bigdata` mọi người chú ý đón đọc nhé!
+[Apache Hadoop][apache-hadoop] là một dự án phần mềm nguồn mở được sử dụng để xây dựng các hệ thống xử lý dữ liệu lớn, cho phép tính toán phân tán và mở rộng trên các cụm tới hàng ngàn máy tính với khả năng sẵn sàng và chịu lỗi cao. Hiện nay Hadoop đã phát triển trở thành một hệ sinh thái với rất nhiều sản phẩm, dịch vụ khác nhau. Trước đây mình sử dụng [Ambari HDP][hdp] để cài đặt và quản lý Hadoop Ecosystem, công cụ này cho phép tập trung tất cả cấu hình của các dịch Hadoop về một nơi, từ đó dễ dàng quản lý và mở rộng node khi cần. Tuy nhiên từ năm 2021 HDP đã đóng lại để thu phí, tất cả các repository đều yêu cầu tài khoản trả phí để có thể download và cài đặt. Gần đây mình có nhu cầu cần cài đặt hệ thống Hadoop mới, mình quyết định cài tay từng thành phần, tuy sẽ phức tạp và tốn nhiều công sức hơn nhưng mình có thể kiểm soát dễ dàng hơn không bị phụ thuộc vào bên khác, một phần cũng do hệ thống mới chỉ có 3 node nên khối lượng công việc cũng không bị thêm quá nhiều. Toàn bộ quá trình cài đặt mình sẽ ghi chép lại chi tiết trong series các bài viết thuộc chủ đề `bigdata` mọi người chú ý đón đọc nhé!
 
-# Nội dung
+## Nội dung
 1. [Mục tiêu](#target)
 2. [Cài đặt môi trường](#environment)
 3. [Download hadoop và cấu hình](#config)
