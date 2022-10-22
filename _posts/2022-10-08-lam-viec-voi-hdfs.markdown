@@ -32,9 +32,9 @@ HDFS dựa trên ý tưởng từ bài báo [Google File System][gfs] xuất b�
 
 ![HDFS Architecture](/assets/images/blog/bigdata/2022-10-08/hdfsarchitecture.png)
 
-* HDFS sử dụng kiến trúc Master/Slaves. Trong cụm có một node Master gọi là %Name Node* đóng vai trò quản lý toàn bộ hệ thống, trên *Name node* lưu trữ Metadata của hệ thống như tên file, đường dẫn, quyền truy cập, số bản sao (replicas). Các node Slaves gọi là *Data Node* nơi mà dữ liệu thực sự được lưu trữ.
-* *Blocks*: Mỗi file dữ liệu trên HDFS sẽ được chia thành các block và lưu trữ trên các *Data Node* theo sự điều phối của *Name Node*. Mặc định kích thước mỗi block là 128MB, người dùng có thể thay đổi trong file cấu hình của HDFS.
-* *Replication*: Để đảm bảo an toàn và tăng tốc độ khi đọc dữ liệu, mỗi file dữ liệu trên HDFS được lưu trữ thành nhiều bản sao trên các node khác nhau. Mặc định số bản sao là 3, người dùng có thể thay đối số lượng bản sao trong file cấu hình của HDFS trên mỗi Data node.
+* HDFS sử dụng kiến trúc Master/Slaves. Trong cụm có một node Master gọi là *Namenode* đóng vai trò quản lý toàn bộ hệ thống, trên *Namenode* lưu trữ Metadata của hệ thống như tên file, đường dẫn, quyền truy cập, số bản sao (replicas). Các node Slaves gọi là *Datanode* nơi mà dữ liệu thực sự được lưu trữ.
+* *Blocks*: Mỗi file dữ liệu trên HDFS sẽ được chia thành các block và lưu trữ trên các *Datanode* theo sự điều phối của *Namenode*. Mặc định kích thước mỗi block là 128MB, người dùng có thể thay đổi trong file cấu hình của HDFS.
+* *Replication*: Để đảm bảo an toàn và tăng tốc độ khi đọc dữ liệu, mỗi file dữ liệu trên HDFS được lưu trữ thành nhiều bản sao trên các node khác nhau. Mặc định số bản sao là 3, người dùng có thể thay đối số lượng bản sao trong file cấu hình của HDFS trên mỗi Datanode.
 
 ## Thử nghiệm với HDFS <a name="experience"></a>
 
@@ -59,30 +59,30 @@ $ su hdfs
 
 > Sau khi format xong bạn sẽ thấy có thư mục `~/hadoop/dfs/name` được tạo ra, đây là nơi sẽ lưu trữ các metadata của hệ thống.
 
-Start Name node và kiểm tra trên giao diện web `http://localhost:9870/`
+Start Namenode và kiểm tra trên giao diện web `http://localhost:9870/`
 
 ```sh
 [hdfs]$ $HADOOP_HOME/bin/hdfs --daemon start namenode
 ```
 
-> Lúc này node01 đã trở thành Name node, khi kiểm tra trong tab Datanodes trên giao diện web bạn sẽ không thấy có Data node nào do chưa chạy Data node.
+> Lúc này node01 đã trở thành Namenode, khi kiểm tra trong tab Datanodes trên giao diện web bạn sẽ không thấy có Datanode nào do chưa chạy Datanode.
 
-Start Data node
+Start Datanode
 
 ```sh
 [hdfs]$ $HADOOP_HOME/bin/hdfs --daemon start datanode
 ```
 
-> Kiểm tra lại trên giao diện web, ta sẽ thấy node01 xuất hiện trong tab Datanodes. Dữ liệu của Data node sẽ được lưu trữ trong thư mục `~/hadoop/dfs/data`. Node01 lúc này vừa là namenode vừa là datanode.
+> Kiểm tra lại trên giao diện web, ta sẽ thấy node01 xuất hiện trong tab Datanodes. Dữ liệu của Datanode sẽ được lưu trữ trong thư mục `~/hadoop/dfs/data`. Node01 lúc này vừa là Namenode vừa là Datanode.
 
-Tương tự bạn chạy Data node trên node02 và node03 để được cụm 3 node.
+Tương tự bạn chạy Datanode trên node02 và node03 để được cụm 3 node.
 
 `node02`
 
 ```sh
 $ docker start node02
 $ docker exec -it node02 bash
-$ echo "127.20.0.2      node01" # thay bang ip node01 
+$ echo "127.20.0.2      node01" >> /etc/hosts # thay bang ip node01 
 $ su hdfs
 [hdfs]$ rm -rf ~/hadoop
 [hdfs]$ $HADOOP_HOME/bin/hdfs --daemon start datanode
@@ -90,7 +90,7 @@ $ su hdfs
 
 > Kiểm tra trên giao diện web `http://localhost:9870/dfshealth.html#tab-datanode` sẽ thấy hệ thống đã nhận đủ 3 node.
 
-Mặc định Name node và Data node sẽ liên lạc với nhau sau mỗi 300s. Mình sẽ thay đổi lại cấu hình này xuống 3s để tiện cho các thử nghiệm tiếp theo.
+Mặc định Namenode và Datanode sẽ liên lạc với nhau sau mỗi 300s. Mình sẽ thay đổi lại cấu hình này xuống 3s để tiện cho các thử nghiệm tiếp theo.
 
 - `$HADOOP_HOME/etc/hadoop/hdfs-site.xml`
 {% highlight xml %}
@@ -114,7 +114,7 @@ hdfs@node03:~$ echo "hello world" > test1.txt
 hdfs@node03:~$ hdfs dfs -copyFromLocal test1.txt /
 ```
 
-> Lưu ý: khi cài đặt mình đã cấu hình `dfs.permissions.superusergroup` = `hadoop` và `dfs.datanode.data.dir.perm` = `774` tức là chỉ user của group hadoop mới có quyền đọc ghi trên hdfs. Nếu bạn muốn sử dụng user khác thì phải add user đó vào group hadoop trên name node bằng lệnh `adduser [username] hadoop`
+> Lưu ý: khi cài đặt mình đã cấu hình `dfs.permissions.superusergroup` = `hadoop` và `dfs.datanode.data.dir.perm` = `774` tức là chỉ user của group hadoop mới có quyền đọc ghi trên hdfs. Nếu bạn muốn sử dụng user khác thì phải add user đó vào group hadoop trên Namenode bằng lệnh `adduser [username] hadoop`
 
 Copy dữ liệu từ HDFS về node02
 
@@ -130,7 +130,7 @@ hello world
     text-align: center;
 "><img src="/assets/images/blog/bigdata/2022-10-08/file_information.png" alt="File Information" width="350"></p>
 
-> Nếu giờ ta tắt datanode trên node03 đi thì sẽ không thể truy cập được file này từ node02 nữa.
+> Nếu giờ ta tắt Datanode trên node03 đi thì sẽ không thể truy cập được file này từ node02 nữa.
 
 ```sh
 hdfs@node03:~$ $HADOOP_HOME/bin/hdfs --daemon stop datanode
@@ -191,8 +191,41 @@ hadoop-3.3.4.tar.gz  hadoop_2.tar.gz  test
 
 > Ta thấy vẫn có thể lấy được dữ liệu về, nguyên nhân là vi số replication của file dữ liệu này là 2 nên khi node03 bị tắt, Namenode sẽ tự động tạo thêm một bản sao mới và lưu trên 2 node còn lại để đảm bảo số replication vẫn là 2, nhờ đó khi node2 bị tắt ta vẫn lấy được đầy đủ dữ liệu từ node01.
 
+* Thử nghiệm với Namenode bị tắt
+
+`node01`
+
+```sh
+$HADOOP_HOME/bin/hdfs --daemon stop namenode
+```
+
+`node02`
+
+```sh
+hdfs@node02:~$ hdfs dfs -appendToFile test2.txt /test3.txt
+appendToFile: Call From node02/172.20.0.3 to node01:9000 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused
+```
+
+> Khi Namenode bị tắt thì sẽ không thể đọc hay ghi dữ liệu được nữa, đây chính là điểm yếu của hệ thống chỉ có 1 Namenode, trong bài viết sau mình sẽ giới thiệu kiến trúc HA với nhiều hơn 1 Namenode.
+
+* Thử nghiệm với tất cả Datanode đều bị tắt
+
+`node02`
+
+```sh
+hdfs@node02:~$ hdfs dfs -copyFromLocal test2.txt /test4.txt
+copyFromLocal: Cannot create file/test4.txt._COPYING_. Name node is in safe mode.
+```
+
+> Lúc này mặc dù vẫn có thể kết nối đến Namenode nhưng cũng không thể đọc ghi dữ liệu trên HDFS được.
+
 
 ## Kết luận <a name="conclusion"></a>
+
+Thông qua các thử nghiệm đã thực hiện chúng ta có thể rút ra một số nhận xét sau:
+* Để hệ thống HDFS có thể hoạt động được thì cần tối thiểu 1 Namenode và 1 Datanode, tuy nhiên để đáp ứng được yêu cầu về chịu lỗi thì cần có 2 Datanode và nên có 2 Namenode.
+* Dữ liệu trên HDFS luôn ưu tiên lưu trữ tại địa phương thay vì các node ở xa, trường hợp Datanode trên node không chạy thì mới được chuyển sang lưu trữ ở node khác.
+* Số replication nên được đặt từ 2 trở lên để khi một node gặp vấn đề thì vẫn có thể khôi phục từ các node khác.
 
 Qua bài viết này mình đã giới thiệu các chức năng cơ bản nhất của HDFS và làm một số thử nghiệm thực tế với nó, hi vọng đã có thể giúp ích được cho bạn trong quá trình sử dụng. Hẹn gặp lại trong các bài viết sau!
 
