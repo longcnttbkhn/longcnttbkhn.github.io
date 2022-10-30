@@ -1,5 +1,5 @@
 ---
-title: "Làm việc với HDFS"
+title: "HDFS - Hệ thống File phân tán"
 layout: post
 date: 2022-10-08 08:11:26 +0700
 image: /assets/images/blog/bigdata/2022-10-01/hadoop-logo.jpeg
