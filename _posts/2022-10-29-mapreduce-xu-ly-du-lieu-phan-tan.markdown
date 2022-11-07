@@ -8,7 +8,7 @@ tag:
 - bigdata
 category: blog
 author: Long Nguyen
-description:  Hadoop MapReduce là một framework tính toán cho phép viết các ứng dụng khả năng xử lý được lượng dữ liệu cực lớn (nhiều terabyte) trên nhiều máy tính đồng thời. Trong bài viết này mình sẽ giới thiệu về MapReduce thông qua một ví dụ đơn giản là bài toán WordCount.
+description:  Hadoop MapReduce là một framework tính toán cho phép viết các ứng dụng có khả năng xử lý được lượng dữ liệu cực lớn (nhiều terabyte) trên nhiều máy tính đồng thời. Trong bài viết này mình sẽ giới thiệu về MapReduce thông qua một ví dụ đơn giản là bài toán WordCount.
 ---
 
 ## Nội dung
@@ -165,10 +165,10 @@ Quá trình thực thi chương trình MapReduce có thể tóm tắt lại tron
 
 - *Init:* Một `ApplicationMaster`(AM) được khởi tạo và duy trì cho đến khi chương trình kết thúc, nhiệm vụ của nó là quản lý điều phối các task thực thi trên các node. Chúng ta sẽ tìm hiểu kỹ hơn về AM trong bài viết sau.
 - *Map:* AM xác định các node có dữ liệu đầu vào trên HDFS và yêu cầu chúng thực hiện việc biến đổi dữ liệu đầu vào theo chỉ dẫn được người dùng viết trong hàm `map`
-- *Shuffle and Sort:* Các cặp <Key, Value> kết qủa từ hàm `map` sẽ được trộn giữa các node và sắp xếp theo key. Các cặp <Key, Value> có cùng key sẽ được gom nhóm lại với nhau.
+- *Shuffle and Sort:* Các cặp <Key, Value> kết quả từ hàm `map` sẽ được trộn giữa các node và sắp xếp theo key. Các cặp <Key, Value> có cùng key sẽ được gom nhóm lại với nhau.
 - *Reduce:* Trong giai đoạn này, các cặp <Key, Value> cùng key sẽ được xử lý theo chỉ dẫn được viết trong hàm `reduce` để ra được kết quả cuối cùng.
 
-Khi xử lý những dữ liệu có khối lượng lớn, AM sẽ tạo ra nhiều task (mỗi task xử lý một block) và thực thi chúng trên nhiều node khác nhau để tăng hiệu quả. Nếu trong quá trình chạy có 1 node bị hỏng, AM sẽ chuyển các task của node đó sang thực thi trên node khác mà không làm ảnh hưởng đến các task khác và toàn bộ chương trình.
+Khi xử lý những dữ liệu có khối lượng lớn, AM sẽ tạo ra nhiều task (mỗi task xử lý một block) và thực thi chúng trên nhiều node khác nhau để tăng hiệu năng. Nếu trong quá trình chạy có 1 node bị hỏng, AM sẽ chuyển các task của node đó sang thực thi trên node khác mà không làm ảnh hưởng đến các task khác và toàn bộ chương trình.
 
 ## Kết luận <a name="conclusion"></a>
 
