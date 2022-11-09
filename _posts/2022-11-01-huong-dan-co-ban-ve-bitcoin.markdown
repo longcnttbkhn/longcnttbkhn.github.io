@@ -2,7 +2,7 @@
 title: "Hướng dẫn cơ bản về Bitcoin"
 layout: post
 date: 2022-11-01 23:13:28 +0700
-image: /assets/images/blog/blockchain/2022-11-01/bitcoin.png
+image: /assets/images/blog/blockchain/2022-11-01/bitcoin-logo.png
 headerImage: false
 tag:
 - blockchain
