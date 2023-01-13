@@ -29,6 +29,21 @@ Theo định nghĩa từ [Oracal](data_warehouse_definition), Data Warehouse là
 5. [Cài đặt DBT](#install_dbt)
 6. [Cài đặt Superset](#install_superset)
 
+
+## Kiến trúc thiết kế <a name="desgin_architecture"></a>
+
+Có nhiều cách để thiết kế một Data Warehouse, nó sẽ phụ thuộc vào nhu cầu sử dụng của mỗi người, ở đây mình dựa trên những mô tả kỹ thuật của [Dune Analyst](https://dune.com/home) một startup cung cấp hạ tầng phân tích dữ liệu Blockchain, được định giá tới 1 tỷ đô vào thời điểm tháng 2/2022.
+
+![DWH Architecture](/assets/images/blog/bigdata/2023-01-07/dwh_architecture.png)
+
+- [DBT](https://www.getdbt.com/product/what-is-dbt/) là một framework cho phép nhà phát triển có thể xây dựng các mô hình dữ liệu, các phép biến đổi dữ liệu một cách nhanh chóng bằng ngôn ngữ SQL quen thuộc.
+- [HDFS](/hdfs-he-thong-file-phan-tan) đóng vai trò là hạ tầng lưu trữ dữ liệu cho toàn bộ hệ thống, cung cấp khả năng mở rộng, tính sẵn sàng và chịu lỗi cao.
+- [Spark](https://spark.apache.org/) là một framework tính toán cho phép các ứng dụng có thể chạy song song phân tán trên nhiều máy tính để tăng hiệu quả trong xử lý dữ liệu lớn. Spark nhanh hơn [Mapreduce](/mapreduce-xu-ly-du-lieu-phan-tan) tới hàng trăm lần nhờ khả năng sử dụng bộ nhớ RAM để lưu trữ các dữ liệu trung gian thay vì đọc ghi chúng trên ổ đĩa cứng.
+- [Hive](https://hive.apache.org/) trong hệ thống này đóng vai trò là một lớp giao diện cho phép các ứng dụng khác có thể sử dụng Spark và HDFS bằng ngôn ngữ SQL.
+- [Postgresql](https://www.postgresql.org/) là cơ sở dữ liệu lưu trữ các Metadata cho Hive.
+- [Superset](https://superset.apache.org/) là công cụ để trình diễn dữ liệu dưới dạng các bảng, biểu đồ trong các dashboard phân tích.
+- [Airflow](https://airflow.apache.org/) cung cấp khả năng quản lý, lập lịch thực thi luồng công việc, từ động hóa quy trình, hỗ trợ nhà phát triển theo dõi, phát hiện lỗi, đặc biệt là trong những luồng xử lý phức tạp, phụ thuộc lẫn nhau.
+
 ## Cài đặt Spark <a name="install_spark"></a>
 
 Bạn lên trang chủ của Spark [tại đây](download_spark) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.1, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.1.1. 
@@ -324,7 +339,113 @@ Kiểm tra trên giao diện web của Superset: `http://172.24.0.4:8088/
 Để sử dụng các truy vấn vào DWH, bạn sử dụng giao diện SQL Lab trên Superset:
 ![SQL Lab](/assets/images/blog/bigdata/2023-01-07/sql_lab.png)
 
-## Cài đặt 
+## Cài đặt Airflow <a name="install_airflow"></a>
+
+Để đơn giản, bạn có thể cài trực tiếp Airflow trong project jaffle_shop của dbt, bạn xem hướng dẫn cài đặt [tại đây](https://airflow.apache.org/docs/apache-airflow/stable/start.html)
+
+```sh
+$ export AIRFLOW_HOME=~/airflow
+$ AIRFLOW_VERSION=2.5.0
+$ PYTHON_VERSION="$(python --version | cut -d " " -f 2 | cut -d "." -f 1-2)"
+$ CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/$ constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+$ pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+```
+
+Tạo file DAG cho project jaffle_shop trong thư mục `~/airflow/dags/jaffle_shop/pipeline.py`
+
+```python
+from datetime import datetime, timedelta
+import json
+
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+
+
+dag = DAG(
+    dag_id='dbt_dag',
+    start_date=datetime(2020, 12, 23),
+    description='A dbt wrapper for Airflow',
+    schedule_interval=timedelta(days=1),
+)
+
+def load_manifest():
+    local_filepath = "jaffle_shop/target/manifest.json"
+    with open(local_filepath) as f:
+        data = json.load(f)
+
+    return data
+
+def make_dbt_task(node, dbt_verb):
+    """Returns an Airflow operator either run and test an individual model"""
+    DBT_DIR = "jaffle_shop"
+    GLOBAL_CLI_FLAGS = "--no-write-json"
+    model = node.split(".")[-1]
+
+    if dbt_verb == "run":
+        dbt_task = BashOperator(
+            task_id=node,
+            bash_command=f"""
+            cd {DBT_DIR} &&
+            dbt {GLOBAL_CLI_FLAGS} {dbt_verb} --target prod --models {model}
+            """,
+            dag=dag,
+        )
+
+    elif dbt_verb == "test":
+        node_test = node.replace("model", "test")
+        dbt_task = BashOperator(
+            task_id=node_test,
+            bash_command=f"""
+            cd {DBT_DIR} &&
+            dbt {GLOBAL_CLI_FLAGS} {dbt_verb} --target prod --models {model}
+            """,
+            dag=dag,
+        )
+
+    return dbt_task
+
+data = load_manifest()
+
+dbt_tasks = {}
+for node in data["nodes"].keys():
+    if node.split(".")[0] == "model":
+        node_test = node.replace("model", "test")
+
+        dbt_tasks[node] = make_dbt_task(node, "run")
+        dbt_tasks[node_test] = make_dbt_task(node, "test")
+
+for node in data["nodes"].keys():
+    if node.split(".")[0] == "model":
+
+        # Set dependency to run tests on a model after model runs finishes
+        node_test = node.replace("model", "test")
+        dbt_tasks[node] >> dbt_tasks[node_test]
+
+        # Set all model -> model dependencies
+        for upstream_node in data["nodes"][node]["depends_on"]["nodes"]:
+
+            upstream_node_type = upstream_node.split(".")[0]
+            if upstream_node_type == "model":
+                dbt_tasks[upstream_node] >> dbt_tasks[node]
+```
+
+> Lưu ý: update lại đường dẫn thư mục project jaffle_shop trong `local_filepath` và `DBT_DIR`
+
+Chạy Airflow
+```sh
+$ airflow standalone
+```
+
+Bạn vào giao diện của airflow tại `http://localhost:8080/` và login với account `admin` và mật khẩu được cung gấp trên command line.
+
+![Airflow](/assets/images/blog/bigdata/2023-01-07/airflow.png)
+
+
+![Airflow Graph](/assets/images/blog/bigdata/2023-01-07/airflow_graph.png)
+
+## Kết luận <a name="conclusion"></a>
+
+Trong bài viết này mình đã giới thiệu với mọi người kiến trúc và cách cài đặt một Data Warehouse trên Hadoop, đến đây cũng đã khá dài rồi nên phần hướng dẫn sử dụng, test đánh giá hiệu năng mình sẽ trình bày trong bài viết sau nhé. Hẹn gặp lại.
 
 [data_warehouse_definition]
 [download_spark]: https://spark.apache.org/downloads.html
