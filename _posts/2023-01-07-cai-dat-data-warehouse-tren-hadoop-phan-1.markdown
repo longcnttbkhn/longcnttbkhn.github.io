@@ -11,10 +11,23 @@ author: Long Nguyen
 description: 
 ---
 
+Theo định nghĩa từ [Oracal](data_warehouse_definition), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Bussiness Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt như sau:
+
+| Tiêu chí              | Database |  Data warehouse |
+| :---------------- | :------: | :----: |
+| Mục đích thiết kế |  Thu thập dữ liệu   | Phân tích dữ liệu |
+| Chức năng | Hỗ trợ hoạt động hàng ngày | Hỗ trợ ra quyết định |
+| Phương pháp xử lý   |  OLTP: Xử lý giao dịch trực tuyến  | OLAP: Xử lý phân tích trực tuyến |
+| Thiết kế bảng | Theo dạng chuẩn để tránh dư thừa dữ liệu | Thiết kế theo hình sao với nhiều chiều dữ liệu |
+
 # Nội dung
 
-1. [Cài đặt Spark](#install_spark)
-2. [Cài đặt Postgresql và Hive](#install_hive)
+1. [Kiến trúc thiết kế](#design_architecture)
+2. [Cài đặt Spark](#install_spark)
+3. [Cài đặt Postgresql ](#install_postgresql)
+4. [Cấu hình Spark Thrift Server (Hive)](#install_hive)
+5. [Cài đặt DBT](#install_dbt)
+6. [Cài đặt Superset](#install_superset)
 
 ## Cài đặt Spark <a name="install_spark"></a>
 
@@ -238,7 +251,6 @@ $ git clone https://github.com/dbt-labs/jaffle_shop.git
 ```
 
 Cài đặt môi trường phát triển và các thư viện qua Anaconda (bạn có thể tham khảo về Anaconda [tại đây](https://www.anaconda.com/))
-
 ```sh
 $ conda create -n dbt_example python=3.9
 $ conda activate dbt_example
@@ -273,7 +285,6 @@ jaffle_shop:
 ```
 
 Lần lượt chạy các lệnh sau để migrate các model thành các bảng trên DWH
-
 ```sh
 $ dbt debug
 $ dbt seed
@@ -292,7 +303,6 @@ Kiểm tra thư mục `warehouse` trên HDFS: `http://172.24.0.2:9870/explorer.h
 ## Cài đặt Superset <a name="install_superset"></a>
 
 Chúng ta sẽ sử dụng Superset để xem dữ liệu được migrate trên trên DWH. Mình sẽ cài Superset thông qua docker
-
 ```sh
 docker run -d --name superset --hostname superset --network hadoop apache/superset
 docker exec -it superset superset fab create-admin \
@@ -303,21 +313,19 @@ docker exec -it superset superset fab create-admin \
               --password admin
 ```
 
-Kiểm tra trên giao diện web của Superset: `http://172.24.0.4:8088/`
-
+Kiểm tra trên giao diện web của Superset: `http://172.24.0.4:8088/
 ![Superset Screen](/assets/images/blog/bigdata/2023-01-07/superset_screen.png)
 
 Đăng nhập bằng account `admin/admin`, sau đó vào `Settting \ Databases Connections` để tạo một Connection Database mới. Trong step 1 bạn chọn Supported Database là Apache Hive, trong phần SQLALCHEMY URI bạn điền url của Hive: `hive://postgres@172.24.0.2:10000/jaffle_shop` sau đó chọn Connect.
-
 <p style="
     text-align: center;
 "><img src="/assets/images/blog/bigdata/2023-01-07/superset_connect.png" alt="Superset Connect" width="350"></p>
 
 Để sử dụng các truy vấn vào DWH, bạn sử dụng giao diện SQL Lab trên Superset:
-
 ![SQL Lab](/assets/images/blog/bigdata/2023-01-07/sql_lab.png)
 
 ## Cài đặt 
 
+[data_warehouse_definition]
 [download_spark]: https://spark.apache.org/downloads.html
 [install_postgresql]: https://www.postgresql.org/download/linux/ubuntu/
