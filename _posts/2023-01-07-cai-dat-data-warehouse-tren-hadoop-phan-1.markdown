@@ -128,7 +128,7 @@ $ su postgres
 Vào giao diện Sql command:
 
 ```sh
-$ psql
+[postgres]$ psql
 ```
 
 Set lại mật khẩu cho account postgres:
