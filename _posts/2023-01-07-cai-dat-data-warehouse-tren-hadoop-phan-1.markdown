@@ -27,7 +27,7 @@ Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn
 
 ## Giới thiệu tổng quan <a name="introduction"></a>
 
-Theo định nghĩa từ [Oracle](data_warehouse_definition), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Bussiness Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt giữa 2 hệ thống này như sau:
+Theo định nghĩa từ [Oracle](https://www.oracle.com/database/what-is-a-data-warehouse/), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Bussiness Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt giữa 2 hệ thống này như sau:
 - Database dùng cho mục đích thu thập dữ liệu, sử dụng cho các hoạt động hàng ngày, còn DWH dùng cho phân tích dữ liệu.
 - Dữ liệu trong Database được thêm, sửa, xoá trực tiếp bởi các ứng dụng còn dữ liệu trong DWH được import vào từ nhiều nguồn khác nhau.
 - Bảng trong Database được thiết kế theo dạng chuẩn để tránh dư thừa và đảm bảo chính xác khi thêm sửa, xoá, còn trong DWH dữ liệu có thể lặp lại để truy vấn nhanh hơn nhưng hạn chế khi chỉnh sửa dữ liệu.
@@ -126,6 +126,7 @@ $ su postgres
 ```
 
 Vào giao diện Sql command:
+
 ```sh
 $ psql
 ```
@@ -139,11 +140,13 @@ postgres=# ALTER USER postgres WITH PASSWORD 'password';
 Để có thể connect từ các máy khác (remote) ta cần sửa lại cấu hình như sau:
 
 - Chỉnh sửa cấu hình trong: `postgresql.conf`
+
 ```sh 
 listen_addresses = '*'
 ```
 
 - Bổ sung cấu hình sau vào cuối file: `pg_hba.conf`
+
 ```
 host all all 0.0.0.0/0 md5
 ```
@@ -151,6 +154,7 @@ host all all 0.0.0.0/0 md5
 > Lưu ý: để biết vị trí của 2 file cấu hình ta cần  dùng lệnh `show config_file;` và `show hba_file;` trên Sql command.
 
 Restart posgresql
+
 ```sh
 $ service postgresql restart
 ```
@@ -158,7 +162,7 @@ $ service postgresql restart
 Kiểm tra xem đã connect được vào postgresql thông qua ip chưa:
 
 ```sh
-$ psql -h node01 -p 5432 -U postgres -w
+$ psql -h node01 -p 5432 -U postgres -W
 ```
 
 ## Cấu hình Spark Thrift Server (Hive) <a name="install_hive"></a>
@@ -191,7 +195,7 @@ Trong bản cài đặt của Spark đã có tích hợp sẵn Thrift Server (Hi
 
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
-        <value>postgres</value>
+        <value>hive</value>
     </property>
 
     <property>
@@ -231,20 +235,24 @@ Trong bản cài đặt của Spark đã có tích hợp sẵn Thrift Server (Hi
 > Thrift server sẽ chạy như một Spark Job trên Yarn vì thế bạn có thể tùy chỉnh tài nguyên phù hợp (dung lượng ram, số nhân, số excurtors...) khi chạy.
 
 Download driver postgresql vào thư mục `$SPARK_HOME/jars/`:
+
 ```sh
 $ cd $SPARK_HOME/jars/
-$ wget wget https://jdbc.postgresql.org/download/postgresql-42.5.1.jar
+$ wget https://jdbc.postgresql.org/download/postgresql-42.5.1.jar
 ```
 
-Tạo và phân quyền cho thư mục `warehouse` trên HDFS:
+Tạo user hive và thư mục `warehouse` trên HDFS:
+
 ```sh
-$ hdfs dfs -mkdir -p /user/hive/warehouse
-$ hdfs dfs -chmod -R 774 /user/hive/warehouse
+$ useradd -g hadoop -m -s /bin/bash hive
+[hive]$ hdfs dfs -mkdir -p /user/hive/warehouse
 ```
 
-Tạo database `metastore` trên Postgresql:
+Tạo tạo user hive và database `metastore` trên Postgresql:
 ```sql
 postgres=# CREATE DATABASE metastore;
+postgres=# CREATE USER hive with password 'password';
+postgres=# GRANT ALL PRIVILEGES ON DATABASE metastore to hive;
 ```
 
 Chạy Thrift Server
@@ -281,7 +289,7 @@ $ conda activate dbt_example
 (dbt_example) $ pip install dbt-spark[PyHive]
 ```
 
-Cấu hình connect đến Hive server trong file `~/dbt/profiles.yml`:
+Cấu hình connect đến Hive server trong file `~/.dbt/profiles.yml`:
 
 ```yml
 jaffle_shop:
@@ -289,9 +297,9 @@ jaffle_shop:
     dev:
       type: spark
       method: thrift
-      host: 172.24.0.2
+      host: node01
       port: 10000
-      user: postgres
+      user: hive
       dbname: jaffle_shop
       schema: dbt_alice
       threads: 4
@@ -299,9 +307,9 @@ jaffle_shop:
     prod:
       type: spark
       method: thrift
-      host: 172.24.0.2
+      host: node01
       port: 10000
-      user: postgres
+      user: hive
       dbname: jaffle_shop
       schema: dbt_alice
       threads: 4
@@ -342,11 +350,11 @@ docker exec -it superset superset fab create-admin \
               --password admin
 ```
 
-Kiểm tra trên giao diện web của Superset: `http://172.24.0.4:8088/
+Kiểm tra trên giao diện web của Superset: `http://172.24.0.4:8088/`
 
 ![Superset Screen](/assets/images/blog/bigdata/2023-01-07/superset_screen.png)
 
-Đăng nhập bằng account `admin/admin`, sau đó vào `Settting \ Databases Connections` để tạo một Connection Database mới. Trong step 1 bạn chọn Supported Database là Apache Hive, trong phần SQLALCHEMY URI bạn điền url của Hive: `hive://postgres@172.24.0.2:10000/jaffle_shop` sau đó chọn Connect.
+Đăng nhập bằng account `admin/admin`, sau đó vào `Settting \ Databases Connections` để tạo một Connection Database mới. Trong step 1 bạn chọn Supported Database là Apache Hive, trong phần SQLALCHEMY URI bạn điền url của Hive: `hive://hive@172.24.0.2:10000/jaffle_shop` sau đó chọn Connect.
 
 <p style="
     text-align: center;
@@ -463,6 +471,5 @@ Bạn vào giao diện của airflow tại `http://localhost:8080/` và login v�
 
 Trong bài viết này mình đã giới thiệu với mọi người kiến trúc và cách cài đặt một Data Warehouse trên Hadoop, đến đây cũng đã khá dài rồi nên phần hướng dẫn sử dụng, test đánh giá hiệu năng mình sẽ trình bày trong bài viết sau nhé. Hẹn gặp lại.
 
-[data_warehouse_definition]
 [download_spark]: https://spark.apache.org/downloads.html
 [install_postgresql]: https://www.postgresql.org/download/linux/ubuntu/
