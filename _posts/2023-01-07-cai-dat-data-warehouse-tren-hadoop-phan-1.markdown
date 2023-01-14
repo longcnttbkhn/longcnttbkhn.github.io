@@ -140,7 +140,7 @@ $ service postgresql restart
 Kiểm tra xem đã connect được vào postgresql thông qua ip chưa:
 
 ```sh
-$ psql -h node01 -p 5432 -U postgres w
+$ psql -h node01 -p 5432 -U postgres W
 ```
 
 ## Cấu hình Spark Thrift Server (Hive) <a name="install_hive"></a>
@@ -172,7 +172,7 @@ Trong bản cài đặt của Spark đã có tích hợp sẵn Thrift Server (Hi
 
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
-        <value>postgres</value>
+        <value>hive</value>
     </property>
 
     <property>
@@ -213,18 +213,21 @@ Trong bản cài đặt của Spark đã có tích hợp sẵn Thrift Server (Hi
 Download driver postgresql vào thư mục `$SPARK_HOME/jars/`:
 ```sh
 $ cd $SPARK_HOME/jars/
-$ wget wget https://jdbc.postgresql.org/download/postgresql-42.5.1.jar
+$ wget https://jdbc.postgresql.org/download/postgresql-42.5.1.jar
 ```
 
-Tạo và phân quyền cho thư mục `warehouse` trên HDFS:
+Tạo user hive và thư mục `warehouse` trên HDFS:
 ```sh
-$ hdfs dfs -mkdir -p /user/hive/warehouse
-$ hdfs dfs -chmod -R 774 /user/hive/warehouse
+$ useradd -g hadoop -m -s /bin/bash hive
+[hive]$ hdfs dfs -mkdir -p /user/hive/warehouse
 ```
 
-Tạo database `metastore` trên Postgresql:
+
+Tạo tạo user hive và database `metastore` trên Postgresql:
 ```sql
 postgres=# CREATE DATABASE metastore;
+postgres=# CREATE USER hive with password 'password';
+postgres=# GRANT ALL PRIVILEGES ON DATABASE metastore to hive;
 ```
 
 Chạy Thrift Server
@@ -260,16 +263,16 @@ $ conda activate dbt_example
 (dbt_example) $ pip install dbt-spark[PyHive]
 ```
 
-Cấu hình connect đến Hive server trong file `~/dbt/profiles.yml`:
+Cấu hình connect đến Hive server trong file `~/.dbt/profiles.yml`:
 ```yml
 jaffle_shop:
   outputs:
     dev:
       type: spark
       method: thrift
-      host: 172.24.0.2
+      host: node01
       port: 10000
-      user: postgres
+      user: hive
       dbname: jaffle_shop
       schema: dbt_alice
       threads: 4
@@ -277,9 +280,9 @@ jaffle_shop:
     prod:
       type: spark
       method: thrift
-      host: 172.24.0.2
+      host: node01
       port: 10000
-      user: postgres
+      user: hive
       dbname: jaffle_shop
       schema: dbt_alice
       threads: 4
