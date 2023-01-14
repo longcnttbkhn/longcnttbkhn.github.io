@@ -8,33 +8,38 @@ tag:
 - bigdata
 category: blog
 author: Long Nguyen
-description: 
+description: Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lương của bài viết nên mình sẽ tách thành 2 phần, phần 1 là hướng dẫn cài đặt, phần 2 là hướng dẫn sử dụng và kết quả test đánh giá hiệu năng hệ thống.
 ---
 
-Theo định nghĩa từ [Oracal](data_warehouse_definition), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Bussiness Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt như sau:
-
-| Tiêu chí              | Database |  Data warehouse |
-| :---------------- | :------: | :----: |
-| Mục đích thiết kế |  Thu thập dữ liệu   | Phân tích dữ liệu |
-| Chức năng | Hỗ trợ hoạt động hàng ngày | Hỗ trợ ra quyết định |
-| Phương pháp xử lý   |  OLTP: Xử lý giao dịch trực tuyến  | OLAP: Xử lý phân tích trực tuyến |
-| Thiết kế bảng | Theo dạng chuẩn để tránh dư thừa dữ liệu | Thiết kế theo hình sao với nhiều chiều dữ liệu |
+Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn cần phải đưa ra quyết định, các quyết định đúng đắn sẽ giúp doanh nghiệp ổn định và phát triển, ngược lại quyết định sai lầm sẽ dẫn đến thua lỗ thậm chí phá sản. Bussiness Intelligence (BI) là một hệ thống tổng hợp thông tin, đưa ra báo cáo phân tích thông minh, xây dựng các mô hình dự báo từ dữ liệu cho phép chủ doanh nghiệp có góc nhìn toàn diện về doanh nghiệp mình từ đó đưa ra những quyết định có lợi cho hoạt động dinh doanh. Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lương của bài viết nên mình sẽ tách thành 2 phần: Phần 1 là hướng dẫn cài đặt, phần 2 là hướng dẫn sử dụng và kết quả test đánh giá hiệu năng hệ thống. 
 
 # Nội dung
 
-1. [Kiến trúc thiết kế](#design_architecture)
-2. [Cài đặt Spark](#install_spark)
-3. [Cài đặt Postgresql ](#install_postgresql)
-4. [Cấu hình Spark Thrift Server (Hive)](#install_hive)
-5. [Cài đặt DBT](#install_dbt)
-6. [Cài đặt Superset](#install_superset)
+1. [Giới thiệu tổng quan](#introduction)
+2. [Kiến trúc thiết kế](#design_architecture)
+3. [Cài đặt Spark](#install_spark)
+4. [Cài đặt Postgresql ](#install_postgresql)
+5. [Cấu hình Spark Thrift Server (Hive)](#install_hive)
+6. [Cài đặt DBT](#install_dbt)
+7. [Cài đặt Superset](#install_superset)
+8. [Cài đặt Airflow](#install_airflow)
+9. [Kết luận](#conclusion)
 
+## Giới thiệu tổng quan <a name="introduction"></a>
 
-## Kiến trúc thiết kế <a name="desgin_architecture"></a>
+Theo định nghĩa từ [Oracle](data_warehouse_definition), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Bussiness Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt giữa 2 hệ thống này như sau:
+- Database dùng cho mục đích thu thập dữ liệu, sử dụng cho các hoạt động hàng ngày, còn DWH dùng cho phân tích dữ liệu.
+- Dữ liệu trong Database được thêm, sửa, xoá trực tiếp bởi các ứng dụng còn dữ liệu trong DWH được import vào từ nhiều nguồn khác nhau.
+- Bảng trong Database được thiết kế theo dạng chuẩn để tránh dư thừa và đảm bảo chính xác khi thêm sửa, xoá, còn trong DWH dữ liệu có thể lặp lại để truy vấn nhanh hơn nhưng hạn chế khi chỉnh sửa dữ liệu.
+- Database tối ưu cho các loại truy vấn thêm, sửa, xoá, tuân thủ ACID để đảm bảo tính toàn vẹn cho dữ liệu, còn DWH tối ưu cho các truy vấn phân tích, tổng hợp phức tạp, chuyên sâu và không phải lúc nào cũng tuân thủ ACID.
+
+## Kiến trúc thiết kế <a name="design_architecture"></a>
 
 Có nhiều cách để thiết kế một Data Warehouse, nó sẽ phụ thuộc vào nhu cầu sử dụng của mỗi người, ở đây mình dựa trên những mô tả kỹ thuật của [Dune Analyst](https://dune.com/home) một startup cung cấp hạ tầng phân tích dữ liệu Blockchain, được định giá tới 1 tỷ đô vào thời điểm tháng 2/2022.
 
-![DWH Architecture](/assets/images/blog/bigdata/2023-01-07/dwh_architecture.png)
+<p style="
+    text-align: center;
+"><img src="/assets/images/blog/bigdata/2023-01-07/dwh_architecture.png" alt="DWH Architecture" width="350"></p>
 
 - [DBT](https://www.getdbt.com/product/what-is-dbt/) là một framework cho phép nhà phát triển có thể xây dựng các mô hình dữ liệu, các phép biến đổi dữ liệu một cách nhanh chóng bằng ngôn ngữ SQL quen thuộc.
 - [HDFS](/hdfs-he-thong-file-phan-tan) đóng vai trò là hạ tầng lưu trữ dữ liệu cho toàn bộ hệ thống, cung cấp khả năng mở rộng, tính sẵn sàng và chịu lỗi cao.
@@ -48,7 +53,7 @@ Có nhiều cách để thiết kế một Data Warehouse, nó sẽ phụ thuộ
 
 Bạn lên trang chủ của Spark [tại đây](download_spark) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.1, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.1.1. 
 
-> Lưu ý: Do đã có sẵn cụm Hadoop rồi nên chúng ta chỉ cần cài Spark trên 1 node (mình cái trên `node01`), khi chạy job Spark ta để cấu hình `--master yarn` thì job sẽ được chạy được trên tất cả các node.
+> Lưu ý: Do đã có sẵn cụm Hadoop rồi (bạn xem lại hướng dẫn [tại đây](/huong-dan-cai-hadoop-cluster/)) nên chúng ta chỉ cần cài Spark trên 1 node (mình cái trên `node01`), khi chạy job Spark ta để cấu hình `--master yarn` thì job sẽ được chạy được trên tất cả các node.
 
 ```sh
 $ wget https://archive.apache.org/dist/spark/spark-3.1.1/spark-3.1.1-bin-hadoop3.2.tgz
@@ -153,7 +158,7 @@ $ service postgresql restart
 Kiểm tra xem đã connect được vào postgresql thông qua ip chưa:
 
 ```sh
-$ psql -h node01 -p 5432 -U postgres w
+$ psql -h node01 -p 5432 -U postgres -w
 ```
 
 ## Cấu hình Spark Thrift Server (Hive) <a name="install_hive"></a>
@@ -161,6 +166,7 @@ $ psql -h node01 -p 5432 -U postgres w
 Trong bản cài đặt của Spark đã có tích hợp sẵn Thrift Server (Hive), cho phép các ứng dụng khác có thể làm việc với Spark thông qua ngôn ngữ SQL của Hive. Ta cần cấu hình để dữ liệu được lưu trữ trên HDFS và metatadata lưu trữ trên postgresql như sau:
 
 - `$SPARK_HOME/conf/hive-site.xml`
+
 ```xml
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
@@ -206,6 +212,7 @@ Trong bản cài đặt của Spark đã có tích hợp sẵn Thrift Server (Hi
 ```
 
 - `$SPARK_HOME/sbin/start-hive.sh`
+
 ```sh
 ./start-thriftserver.sh --master yarn --deploy-mode client \
     --driver-memory 4g \
@@ -246,8 +253,8 @@ $ chmod +x $SPARK_HOME/sbin/start-hive.sh
 $ $SPARK_HOME/sbin/start-hive.sh
 ```
 
-Job đã chạy trên Yarn:
-- `http://172.24.0.2:8088/cluster/scheduler`
+Job đã chạy trên Yarn tại `http://172.24.0.2:8088/cluster/scheduler`
+
 ![Thrift Server](/assets/images/blog/bigdata/2023-01-07/thrift_run_on_yarn.png)
 
 
@@ -261,11 +268,13 @@ $ $SPARK_HOME/sbin/stop-thriftserver.sh
 Để cho nhanh thì mình sẽ sử dụng project example của DBT có sẵn trên Github [tại đây](https://github.com/dbt-labs/jaffle_shop). Mình sẽ giải thích kỹ hơn về project này trong bài viết sau.
 
 Sử dụng git để clone project về máy:
+
 ```sh
 $ git clone https://github.com/dbt-labs/jaffle_shop.git
 ```
 
 Cài đặt môi trường phát triển và các thư viện qua Anaconda (bạn có thể tham khảo về Anaconda [tại đây](https://www.anaconda.com/))
+
 ```sh
 $ conda create -n dbt_example python=3.9
 $ conda activate dbt_example
@@ -273,6 +282,7 @@ $ conda activate dbt_example
 ```
 
 Cấu hình connect đến Hive server trong file `~/dbt/profiles.yml`:
+
 ```yml
 jaffle_shop:
   outputs:
@@ -300,6 +310,7 @@ jaffle_shop:
 ```
 
 Lần lượt chạy các lệnh sau để migrate các model thành các bảng trên DWH
+
 ```sh
 $ dbt debug
 $ dbt seed
@@ -310,14 +321,17 @@ $ dbt docs serve
 ```
 
 Kiểm tra project DBT đã chạy trên `http://localhost:8080/`
+
 ![DBT Screen](/assets/images/blog/bigdata/2023-01-07/dbt_screen.png)
 
 Kiểm tra thư mục `warehouse` trên HDFS: `http://172.24.0.2:9870/explorer.html#/user/hive/warehouse` ta có thể thấy có các database dữ liệu đã được tạo ra:
+
 ![DBT HDFS](/assets/images/blog/bigdata/2023-01-07/dbt_hdfs.png)
 
 ## Cài đặt Superset <a name="install_superset"></a>
 
 Chúng ta sẽ sử dụng Superset để xem dữ liệu được migrate trên trên DWH. Mình sẽ cài Superset thông qua docker
+
 ```sh
 docker run -d --name superset --hostname superset --network hadoop apache/superset
 docker exec -it superset superset fab create-admin \
@@ -329,9 +343,11 @@ docker exec -it superset superset fab create-admin \
 ```
 
 Kiểm tra trên giao diện web của Superset: `http://172.24.0.4:8088/
+
 ![Superset Screen](/assets/images/blog/bigdata/2023-01-07/superset_screen.png)
 
 Đăng nhập bằng account `admin/admin`, sau đó vào `Settting \ Databases Connections` để tạo một Connection Database mới. Trong step 1 bạn chọn Supported Database là Apache Hive, trong phần SQLALCHEMY URI bạn điền url của Hive: `hive://postgres@172.24.0.2:10000/jaffle_shop` sau đó chọn Connect.
+
 <p style="
     text-align: center;
 "><img src="/assets/images/blog/bigdata/2023-01-07/superset_connect.png" alt="Superset Connect" width="350"></p>
@@ -432,6 +448,7 @@ for node in data["nodes"].keys():
 > Lưu ý: update lại đường dẫn thư mục project jaffle_shop trong `local_filepath` và `DBT_DIR`
 
 Chạy Airflow
+
 ```sh
 $ airflow standalone
 ```
@@ -439,7 +456,6 @@ $ airflow standalone
 Bạn vào giao diện của airflow tại `http://localhost:8080/` và login với account `admin` và mật khẩu được cung gấp trên command line.
 
 ![Airflow](/assets/images/blog/bigdata/2023-01-07/airflow.png)
-
 
 ![Airflow Graph](/assets/images/blog/bigdata/2023-01-07/airflow_graph.png)
 
