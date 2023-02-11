@@ -11,7 +11,7 @@ author: Long Nguyen
 description: Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lương của bài viết nên mình sẽ tách thành 2 phần, phần 1 là hướng dẫn cài đặt, phần 2 là hướng dẫn sử dụng và kết quả test đánh giá hiệu năng hệ thống.
 ---
 
-Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn cần phải đưa ra quyết định, các quyết định đúng đắn sẽ giúp doanh nghiệp ổn định và phát triển, ngược lại quyết định sai lầm sẽ dẫn đến thua lỗ thậm chí phá sản. Bussiness Intelligence (BI) là một hệ thống tổng hợp thông tin, đưa ra báo cáo phân tích thông minh, xây dựng các mô hình dự báo từ dữ liệu cho phép chủ doanh nghiệp có góc nhìn toàn diện về doanh nghiệp mình từ đó đưa ra những quyết định có lợi cho hoạt động dinh doanh. Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lương của bài viết nên mình sẽ tách thành 2 phần: Phần 1 là hướng dẫn cài đặt, phần 2 là hướng dẫn sử dụng và kết quả test đánh giá hiệu năng hệ thống. 
+Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn cần phải đưa ra quyết định, các quyết định đúng đắn sẽ giúp doanh nghiệp ổn định và phát triển, ngược lại quyết định sai lầm sẽ dẫn đến thua lỗ thậm chí phá sản. Business Intelligence (BI) là một hệ thống tổng hợp thông tin, đưa ra báo cáo phân tích thông minh, xây dựng các mô hình dự báo từ dữ liệu cho phép chủ doanh nghiệp có góc nhìn toàn diện về doanh nghiệp mình từ đó đưa ra những quyết định có lợi cho hoạt động dinh doanh. Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lượng của bài viết nên mình sẽ tách thành 2 phần: Phần 1 là hướng dẫn cài đặt, phần 2 là hướng dẫn sử dụng và kết quả test đánh giá hiệu năng hệ thống.
 
 # Nội dung
 
@@ -27,7 +27,7 @@ Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn
 
 ## Giới thiệu tổng quan <a name="introduction"></a>
 
-Theo định nghĩa từ [Oracle](https://www.oracle.com/database/what-is-a-data-warehouse/), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Bussiness Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt giữa 2 hệ thống này như sau:
+Theo định nghĩa từ [Oracle](https://www.oracle.com/database/what-is-a-data-warehouse/), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Business Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt giữa 2 hệ thống này như sau:
 - Database dùng cho mục đích thu thập dữ liệu, sử dụng cho các hoạt động hàng ngày, còn DWH dùng cho phân tích dữ liệu.
 - Dữ liệu trong Database được thêm, sửa, xoá trực tiếp bởi các ứng dụng còn dữ liệu trong DWH được import vào từ nhiều nguồn khác nhau.
 - Bảng trong Database được thiết kế theo dạng chuẩn để tránh dư thừa và đảm bảo chính xác khi thêm sửa, xoá, còn trong DWH dữ liệu có thể lặp lại để truy vấn nhanh hơn nhưng hạn chế khi chỉnh sửa dữ liệu.
@@ -51,14 +51,14 @@ Có nhiều cách để thiết kế một Data Warehouse, nó sẽ phụ thuộ
 
 ## Cài đặt Spark <a name="install_spark"></a>
 
-Bạn lên trang chủ của Spark [tại đây](download_spark) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.1, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.1.1. 
+Bạn lên trang chủ của Spark [tại đây](download_spark) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.1, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.1.2. 
 
 > Lưu ý: Do đã có sẵn cụm Hadoop rồi (bạn xem lại hướng dẫn [tại đây](/huong-dan-cai-hadoop-cluster/)) nên chúng ta chỉ cần cài Spark trên 1 node (mình cái trên `node01`), khi chạy job Spark ta để cấu hình `--master yarn` thì job sẽ được chạy được trên tất cả các node.
 
 ```sh
-$ wget https://archive.apache.org/dist/spark/spark-3.1.1/spark-3.1.1-bin-hadoop3.2.tgz
-$ tar -xzvf spark-3.1.1-bin-hadoop3.2.tgz 
-$ mv spark-3.1.1-bin-hadoop3.2 /lib/spark
+$ wget https://archive.apache.org/dist/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
+$ tar -xzvf spark-3.1.2-bin-hadoop3.2.tgz 
+$ mv spark-3.1.2-bin-hadoop3.2 /lib/spark
 $ mkdir /lib/spark/logs
 $ chgrp hadoop -R /lib/spark
 $ chmod g+w -R /lib/spark
@@ -101,7 +101,7 @@ Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 3.1.1
+   /___/ .__/\_,_/_/ /_/\_\   version 3.1.2
       /_/
          
 Using Scala version 2.12.10 (OpenJDK 64-Bit Server VM, Java 11.0.17)
