@@ -1,5 +1,5 @@
 ---
-title: "Hướng dẫn cài đặt Data Warehouse trên Hadoop (phần 1)"
+title: "DWH 1: Hướng dẫn cài đặt Data Warehouse trên Hadoop"
 layout: post
 date: 2023-01-07 09:00:00 +0700
 image: /assets/images/blog/bigdata/2023-01-07/data_warehouse.jpeg
@@ -8,10 +8,10 @@ tag:
 - bigdata
 category: blog
 author: Long Nguyen
-description: Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lương của bài viết nên mình sẽ tách thành 2 phần, phần 1 là hướng dẫn cài đặt, phần 2 là hướng dẫn sử dụng và kết quả test đánh giá hiệu năng hệ thống.
+description: Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lương của bài viết nên mình sẽ tách thành 2 phần, phần 1 là hướng dẫn cài đặt, phần 2 là ứng dụng DWH cho một bài toán cụ thể.
 ---
 
-Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn cần phải đưa ra quyết định, các quyết định đúng đắn sẽ giúp doanh nghiệp ổn định và phát triển, ngược lại quyết định sai lầm sẽ dẫn đến thua lỗ thậm chí phá sản. Business Intelligence (BI) là một hệ thống tổng hợp thông tin, đưa ra báo cáo phân tích thông minh, xây dựng các mô hình dự báo từ dữ liệu cho phép chủ doanh nghiệp có góc nhìn toàn diện về doanh nghiệp mình từ đó đưa ra những quyết định có lợi cho hoạt động dinh doanh. Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lượng của bài viết nên mình sẽ tách thành 2 phần: Phần 1 là hướng dẫn cài đặt, phần 2 là hướng dẫn sử dụng và kết quả test đánh giá hiệu năng hệ thống.
+Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn cần phải đưa ra quyết định, các quyết định đúng đắn sẽ giúp doanh nghiệp ổn định và phát triển, ngược lại quyết định sai lầm sẽ dẫn đến thua lỗ thậm chí phá sản. Business Intelligence (BI) là một hệ thống tổng hợp thông tin, đưa ra báo cáo phân tích thông minh, xây dựng các mô hình dự báo từ dữ liệu cho phép chủ doanh nghiệp có góc nhìn toàn diện về doanh nghiệp mình từ đó đưa ra những quyết định có lợi cho hoạt động dinh doanh. Trong bài viết này mình sẽ giới thiệu với các bạn về Data warehouse (DWH) được ví như "chiếc dạ dày", là kho chứa toàn bộ dữ liệu của hệ thống BI, do dung lượng của bài viết nên mình sẽ tách thành 2 phần: Phần 1 là hướng dẫn cài đặt, phần 2 là ứng dụng DWH cho một bài toán cụ thể.
 
 # Nội dung
 
@@ -469,7 +469,7 @@ Bạn vào giao diện của airflow tại `http://localhost:8080/` và login v�
 
 ## Kết luận <a name="conclusion"></a>
 
-Trong bài viết này mình đã giới thiệu với mọi người kiến trúc và cách cài đặt một Data Warehouse trên Hadoop, đến đây cũng đã khá dài rồi nên phần hướng dẫn sử dụng, test đánh giá hiệu năng mình sẽ trình bày trong bài viết sau nhé. Hẹn gặp lại.
+Trong bài viết này mình đã giới thiệu với mọi người kiến trúc và cách cài đặt một Data Warehouse trên Hadoop, đến đây cũng đã khá dài rồi nên phần ứng dụng của DWH mình sẽ trình bày trong bài viết sau nhé. Hẹn gặp lại.
 
 [download_spark]: https://spark.apache.org/downloads.html
 [install_postgresql]: https://www.postgresql.org/download/linux/ubuntu/
