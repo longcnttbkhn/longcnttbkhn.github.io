@@ -9,7 +9,7 @@ tag:
 - blockchain
 category: blog
 author: Long Nguyen
-description: 
+description: Bài viết giới thiệu về hệ thống phân tích dữ liệu blockchain dựa trên hạ tầng Data warehouse Hadoop.
 ---
 
 Trong bài viết trước mình đã giới thiệu với các bạn một thiết kế và cài đặt Data Warehouse dựa trên nền tảng Hadoop và một số công nghệ Opensource, bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/). Trong bài viết này mình sẽ sử dụng DWH này để áp dụng cho một bài toán cụ thể là phân tích dữ liệu Blockchain. Do nội dung bài viết sẽ tập trung vào hệ thống phân tích dữ liệu nên mình sẽ không đi quá sâu vào công nghệ Blockchain mà sẽ chỉ trình bày các vấn đề liên quan đến dữ liệu EVM Blockchain để giải thích cho thiết kế của hệ thống.
