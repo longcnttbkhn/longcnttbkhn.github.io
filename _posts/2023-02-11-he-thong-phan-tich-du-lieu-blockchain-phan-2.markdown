@@ -79,7 +79,7 @@ contract SimpleStorage {
 
 ## Scanner <a name="scanner"></a>
 
-Trước khi nói về Scanner mình sẽ mô tả qua một chút về dữ liệu trên EVM Blockchain. Mình sẽ lấy một ví dụ là một giao dịch [Transfer](https://etherscan.io/tx/0xc3b4f70cbf9d8ecb89687cfa73e1af879c60ff124c3c75208931f74231d78129) của USDT, một stable coin chuẩn ERC20 trên mạng Ethereum. Ở tab overiew bạn có thể nhìn thấy các thông tin sau (click vào more detal để xem toàn bộ thông tin):
+Trước khi nói về Scanner mình sẽ mô tả qua một chút về dữ liệu trên EVM Blockchain. Mình sẽ lấy một ví dụ là một giao dịch [Transfer](https://etherscan.io/tx/0xc3b4f70cbf9d8ecb89687cfa73e1af879c60ff124c3c75208931f74231d78129) của USDT, một stable coin chuẩn ERC20 trên mạng Ethereum. Ở tab overiew bạn có thể nhìn thấy các thông tin sau (click vào more detail để xem toàn bộ thông tin):
 
 - Transaction Hash: là định danh duy nhất của transaction này, bạn có thể sử dụng TxHash để tìm chính xác transaction.
 - Status: Trạng thái của giao dịch thường là Success hoặc Pending
@@ -90,7 +90,7 @@ Trước khi nói về Scanner mình sẽ mô tả qua một chút về dữ li�
 - Transaction fee: Phí giao dịch tính bằng ETH
 - Gas Price: Giá gas tại thời điểm giao dịch tính bằng ETH
 - Gas Limit & Usage: Số gas tối đa và số gas đã sử dụng cho transaction
-- Burnt & Txn Savings Fees: Số ETH bị burnt và số eth được trả lại cho validator khi thực hiện giao dịch. Bạn có thể xem thêm về cơ chế mint burnt của ethereum [tại đây](https://ethereum.org/en/developers/docs/intro-to-ether/).
+- Burnt & Txn Savings Fees: Số ETH bị burn và số eth được trả lại cho validator khi thực hiện giao dịch. Bạn có thể xem thêm về cơ chế mint burn của ethereum [tại đây](https://ethereum.org/en/developers/docs/intro-to-ether/).
 - Input Data: dữ liệu được gửi kèm khi thực hiện giao dịch, trong giao dịch này chính là lời gọi thực hiện chức năng transfer của contract. Bạn có thể click vào View input as Original để xem dữ liệu dạng raw hoặc Decode input data để xem dữ liệu sau khi giải mã.
 
 Chuyển qua tab logs bạn sẽ nhìn thấy danh sách các log được phát ra khi thực hiện giao dịch này, mỗi event log bao gồm các thông tin sau:
@@ -99,7 +99,7 @@ Chuyển qua tab logs bạn sẽ nhìn thấy danh sách các log được phát
 - Topics: chứa các thông tin được đánh index trong event log, trong đó topic[0] là signature (định danh duy nhất) của event log này, dùng để phân biệt event này với event khác.
 - Data: Dữ liệu trong event log.
 
-Scanner sẽ thực hiện việc lấy dữ liệu raw transaction và event log từ Node service và lưu xuống DWH. Với số lượng block cần lấy dữ liệu là rất lớn: 16,6 triệu block trên Ethereum và 25,6 triệu block trên BSC nên mình đã sử dụng Spark cùng với thư viện [Web3j](https://docs.web3j.io/) để có thể scan song song nhiều block cùng lúc từ đó tận dụng được tối đa băng thông của Node service. Dưới đây là một đoạn code scala mẫu sử dụng Web3j để lấy dữ liệu từ node service cho các bạn tham khảo:
+Scanner sẽ thực hiện việc lấy dữ liệu raw transaction và event log từ Node Service và lưu xuống DWH, mình sử dụng thư viện [Web3j](https://docs.web3j.io/) để lấy lấy dữ liệu từ Node Service. Dưới đây là một đoạn code mẫu bằng ngôn ngữ Scala để các bạn tham khảo:
 
 ```scala
 import org.web3j.protocol.Web3j
@@ -119,6 +119,8 @@ val transactions = gson.toJson(blockData)
 println(transactions)
 ```
 
+ Với số lượng block cần lấy dữ liệu là rất lớn: 16,6 triệu block trên Ethereum và 25,6 triệu block trên BSC nên để có thể sử dụng được tối đa số lượng request đến Node Service, mình sử dụng Spark để thực hiện việc scan nhiều block song song với nhau.
+
  Kết quả chạy đến thời điểm hiện tại như sau:
 
 - Dữ liệu Event Log:
@@ -135,10 +137,11 @@ println(transactions)
 
 ## Decoder <a name="decoder"></a>
 
-Dữ liệu sau khi được lấy về là dữ liệu raw đã được mã hoá, để giải mã được nó ta cần có ABI (Application Binary Interface) của contract. ABI giống như một bản hướng dẫn kỹ thuật cho phép chúng ta có thể decode được dữ liệu raw thành dữ liệu có cấu trúc và mang ý nghĩa rõ ràng phù hợp cho việc phân tích. Chi tiết về ABI các bạn có thể xem [tại đây](https://docs.soliditylang.org/en/v0.8.17/abi-spec.html). Để lấy được ABI của contract chúng ta có thể sử dụng Blockchain Explorer, ví dụ với contract token USDT bạn có thể vào [đây](https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7#code), trong trang này bạn có thể nhìn thấy cả mã nguồn và ABI của contract. Decoder được thiết kế bao gồm CMS cho phép người dùng upload file ABI của contract (do không phải contract nào cũng có ABI đầy đủ trên Explorer), decoder sẽ giải mã dữ liệu raw và đẩy vào decoded table, bạn có thể xem mô tả về decoded table [tại đây](https://dune.com/docs/tables/decoded/). Dưới đây là một đoạn code mẫu decode dữ liệu event log để các bạn tham khảo:
+Dữ liệu sau khi được lấy về là dữ liệu raw đã được mã hoá, để giải mã được nó ta cần có ABI (Application Binary Interface) của contract. ABI giống như một bản hướng dẫn kỹ thuật cho phép chúng ta có thể decode được dữ liệu raw thành dữ liệu có cấu trúc và mang ý nghĩa rõ ràng phù hợp cho việc phân tích. Chi tiết về ABI các bạn có thể xem [tại đây](https://docs.soliditylang.org/en/v0.8.17/abi-spec.html). Để lấy được ABI của contract chúng ta có thể sử dụng Blockchain Explorer, ví dụ với contract token USDT bạn có thể vào [đây](https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7#code), trong trang này bạn có thể nhìn thấy cả mã nguồn và ABI của contract. Decoder được thiết kế bao gồm CMS cho phép người dùng upload file ABI của contract (do không phải contract nào cũng có ABI đầy đủ trên Explorer), decoder sẽ giải mã dữ liệu raw và đẩy vào decoded table, bạn có thể xem mô tả về decoded table [tại đây](https://dune.com/docs/tables/decoded/). Dưới đây là một đoạn code mẫu decode dữ liệu event log và function call data để các bạn tham khảo:
 
 ```scala
-import com.esaulpaugh.headlong.abi.Event
+import com.esaulpaugh.headlong.abi.{Event, Function}
+import com.esaulpaugh.headlong.util.Strings
 import org.web3j.abi.EventEncoder
 import java.util
 
@@ -147,8 +150,33 @@ val e = Event.fromJson(eventABIJson)
 val eventSignature = EventEncoder.buildEventSignature(e.getCanonicalSignature)
 println(eventSignature)
 
-val extractedData = event.event.decodeArgs(topics.toArray(new Array[Array[Byte]](topics.size())), Strings.decode(data.replace("0x", "")))
-print(extractedData)
+val topic1, topic2, topic3, topic4: String // Topics of one Event
+val data: String // Data of one Event
+
+val topics = new util.ArrayList[Array[Byte]]
+topics.add(Strings.decode(topic1.replace("0x", "")))
+    if (topic2 != null && topic2 != "") {
+        topics.add(Strings.decode(topic2.replace("0x", "")))
+}
+if (topic3 != null && topic3 != "") {
+    topics.add(Strings.decode(topic3.replace("0x", "")))
+}
+if (topic4 != null && topic4 != "") {
+    topics.add(Strings.decode(topic4.replace("0x", "")))
+}
+
+val extractedData = e.decodeArgs(topics.toArray(new Array[Array[Byte]](topics.size())), Strings.decode(data.replace("0x", "")))
+println(extractedData)
+
+val functionABIJson = <String abi json of one Function>
+val f = Function.fromJson(functionABIJson)
+val methodId = Strings.encode(f.selector())
+println(methodId)
+
+val data: String // Input of one Transaction
+val extractedData = f.decodeCall(Strings.decode(data.replace("0x", "")))
+println(extractedData)
+
 ```
 
 ## Spellbook <a name="spellbook"></a>
