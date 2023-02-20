@@ -121,7 +121,7 @@ Trước hết bạn cần cài đặt Spark lên cụm Hadoop theo hướng d�
 
 Tiếp theo bạn kéo code từ git về node đã cài Spark và chạy job trong thưc mục `run/product`, lưu ý cần sửa cấu hình `--master` trong file `run.sh` từ `local[*]` sang `yarn`. 
 
-Khi một ứng dụng Spark đang chạy ta có thể theo dõi nó thông qua giao diện Spark UI: [http://<driver-node>:4040](localhost:4040)
+Khi một ứng dụng Spark đang chạy ta có thể theo dõi nó trên giao diện [Spark UI](http://driver:4040)
 
 ![Spark UI](/assets/images/blog/bigdata/2023-02-18/spark-ui.png)
 
