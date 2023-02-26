@@ -5,7 +5,7 @@ sitemap: false
 ---
 ![Profile Image]({% if site.external-image %}{{ site.picture }}{% else %}{{ site.url }}/{{ site.picture }}{% endif %})
 
-<p>Hi, my name is Long Nguyen from Hanoi, Vietnam. I'm a software engineer with 5 years of product development experience in real estate and blockchain. My favorite job is to design and build big data processing systems for data analysis problems. I graduated from <a href="https://www.hust.edu.vn/">Hust</a> in 2018 and completed my master's defense in 2022. You can get my CV <a href="/assets/docs/nguyen_hoang_long_data_engineer.pdf">hear</a>.</p>
+<p>Hi, my name is Long Nguyen from Hanoi, Vietnam. I'm a software engineer with 5 years of product development experience in real estate and blockchain. My favorite job is to design and build big data processing systems for data analysis problems. I graduated from <a href="https://www.hust.edu.vn/">Hust</a> in 2018 and completed my master's defense in 2022. You can get my CV in <a href="/assets/docs/nguyen_hoang_long_data_engineer.pdf">hear</a>.</p>
 
 <h2>Skills</h2>
 
