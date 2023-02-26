@@ -71,7 +71,7 @@ $ source ~/.bash_profile
 
 5. Bạn cũng cần cài đặt [Java](https://adoptium.net/temurin/releases/) và [Scala](https://www.scala-lang.org/download/). Lưu ý cần chọn phiên bản Java và Scala phù hợp với Spark, ở đây mình chọn Java 11 và Scala 2.12
 
-6. Kiểm tra Spark đã cài
+6. Kiểm tra Spark đã cài thành công hay chưa bằng `spark-shell`
 
 ```sh
 $ spark-shell

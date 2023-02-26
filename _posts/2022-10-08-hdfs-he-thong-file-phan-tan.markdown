@@ -189,7 +189,7 @@ root@node01:~/install# ls
 hadoop-3.3.4.tar.gz  hadoop_2.tar.gz  test
 ```
 
-> Ta thấy vẫn có thể lấy được dữ liệu về, nguyên nhân là vi số replication của file dữ liệu này là 2 nên khi node03 bị tắt, Namenode sẽ tự động tạo thêm một bản sao mới và lưu trên 2 node còn lại để đảm bảo số replication vẫn là 2, nhờ đó khi node2 bị tắt ta vẫn lấy được đầy đủ dữ liệu từ node01.
+> Ta thấy vẫn có thể lấy được dữ liệu về, nguyên nhân là vì số replication của file dữ liệu này là 2 nên khi node03 bị tắt, Namenode sẽ tự động tạo thêm một bản sao mới và lưu trên 2 node còn lại để đảm bảo số replication vẫn là 2, nhờ đó khi node2 bị tắt ta vẫn lấy được đầy đủ dữ liệu từ node01.
 
 * Thử nghiệm với Namenode bị tắt
 

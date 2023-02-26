@@ -50,7 +50,7 @@ Bạn download về và cài đặt như các phần mềm bình thường khác
 Sau khi cấu hình xong bạn khởi chạy Bitcoin core lên sẽ có giao diện như sau:
 ![Create wallet](/assets/images/blog/blockchain/2022-11-01/create-wallet.png)
 
-Sau khi tạo ví
+Tạo ví
 ![Overview](/assets/images/blog/blockchain/2022-11-01/overview.png)
 
 > Ví là nơi lưu trữ thông tin địa chỉ và khoá bí mật tương ứng, ví thực hiện công việc tạo, ký và xác thực các giao dịch, tổng hợp số dư của tất cả địa chỉ trong ví từ đó giúp cho việc gửi và nhận của người dùng trở nên dễ dàng hơn.
@@ -124,7 +124,7 @@ Thuật toán bitcoin sẽ tự động điều chỉnh để tăng độ khó c
 
 ### Ví Bitcoin
 
-Đa số người dùng Bitcoin chỉ cần sử dụng các chức năng gửi và nhận tiền do đó họ không nhất thiết phải download toàn bộ lịch sử giao dịch của Bitcoin, thay ví thế chỉ cần sử dụng ví để lưu trữ thông tin địa chỉ và khoá bí mật. Hiện nay có rất nhiều loại ví có thể sử dụng với Bitcoin, có thể được phân thành 2 loại như sau:
+Đa số người dùng Bitcoin chỉ cần sử dụng các chức năng gửi và nhận tiền do đó họ không nhất thiết phải download toàn bộ lịch sử giao dịch của Bitcoin, thay vì thế chỉ cần sử dụng ví để lưu trữ thông tin địa chỉ và khoá bí mật. Hiện nay có rất nhiều loại ví có thể sử dụng với Bitcoin, có thể được phân thành 2 loại như sau:
 * Ví nóng: là loại ví có kết nối Internet bao gồm 2 loại:
     * Ví Online: địa chỉ, khoá bí mật được quản lý bởi nhà cung cấp dịch vụ ví, người dùng cần đăng ký tài khoản để sử dụng, ví dụ như ví của các sàn giao dịch: Binance, Coinbase...
     * Ví Offline: là phần mềm cài trên máy tính hoặc điện thoại, thông tin địa chỉ và khoá bí mật cũng được lưu trữ trên thiết bị của người dùng, ví dụ: Trust Wallet...
