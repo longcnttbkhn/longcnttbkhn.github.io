@@ -51,14 +51,14 @@ Có nhiều cách để thiết kế một Data Warehouse, nó sẽ phụ thuộ
 
 ## Cài đặt Spark <a name="install_spark"></a>
 
-Bạn lên trang chủ của Spark [tại đây](download_spark) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.1, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.1.2. 
+Bạn lên trang chủ của Spark [tại đây](download_spark) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.4, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.3.2. 
 
 > Lưu ý: Do đã có sẵn cụm Hadoop rồi (bạn xem lại hướng dẫn [tại đây](/huong-dan-cai-hadoop-cluster/)) nên chúng ta chỉ cần cài Spark trên 1 node (mình cái trên `node01`), khi chạy job Spark ta để cấu hình `--master yarn` thì job sẽ được chạy được trên tất cả các node.
 
 ```sh
-$ wget https://archive.apache.org/dist/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
-$ tar -xzvf spark-3.1.2-bin-hadoop3.2.tgz 
-$ mv spark-3.1.2-bin-hadoop3.2 /lib/spark
+$ wget https://archive.apache.org/dist/spark/spark-3.3.2/spark-3.3.2-bin-hadoop3.tgz
+$ tar -xzvf spark-3.3.2-bin-hadoop3.tgz 
+$ mv spark-3.3.2-bin-hadoop3 /lib/spark
 $ mkdir /lib/spark/logs
 $ chgrp hadoop -R /lib/spark
 $ chmod g+w -R /lib/spark
@@ -101,7 +101,7 @@ Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 3.1.2
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.2
       /_/
          
 Using Scala version 2.12.10 (OpenJDK 64-Bit Server VM, Java 11.0.17)
@@ -223,13 +223,8 @@ Trong bản cài đặt của Spark đã có tích hợp sẵn Thrift Server (Hi
     --executor-memory 6g \
     --executor-cores 4 \
     --num-executors 2 \
-    --packages org.apache.hudi:hudi-spark3-bundle_2.12:0.10.0 \
-    --conf spark.hadoop.datanucleus.autoCreateTables=true \
-    --conf spark.hadoop.datanucleus.schema.autoCreateTables=true \
-    --conf spark.hadoop.datanucleus.fixedDatastore=false \
-    --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
-    --conf spark.sql.extensions=org.apache.spark.sql.hudi.HoodieSparkSessionExtension \
-    --conf spark.driver.userClassPathFirst=true
+    --conf "spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension" \
+    --conf "spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog"
 ```
 
 > Thrift server sẽ chạy như một Spark Job trên Yarn vì thế bạn có thể tùy chỉnh tài nguyên phù hợp (dung lượng ram, số nhân, số excurtors...) khi chạy.
@@ -239,6 +234,14 @@ Download driver postgresql vào thư mục `$SPARK_HOME/jars/`:
 ```sh
 $ cd $SPARK_HOME/jars/
 $ wget https://jdbc.postgresql.org/download/postgresql-42.5.1.jar
+```
+
+Download thư viện của Delta vào thư mục `$SPARK_HOME/jars/`:
+
+```sh
+$ cd $SPARK_HOME/jars/
+$ wget https://repo1.maven.org/maven2/io/delta/delta-core_2.12/2.3.0/delta-core_2.12-2.3.0.jar
+$ wget https://repo1.maven.org/maven2/io/delta/delta-storage/2.3.0/delta-storage-2.3.0.jar
 ```
 
 Tạo user hive và thư mục `warehouse` trên HDFS:
