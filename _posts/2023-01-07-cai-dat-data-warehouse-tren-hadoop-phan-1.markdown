@@ -51,7 +51,7 @@ Có nhiều cách để thiết kế một Data Warehouse, nó sẽ phụ thuộ
 
 ## Cài đặt Spark <a name="install_spark"></a>
 
-Bạn lên trang chủ của Spark [tại đây](download_spark) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.4, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.3.2. 
+Bạn lên trang chủ của Spark [tại đây](https://spark.apache.org/downloads.html) để lấy link download. Vào thời điểm viết bài này phiên bản spark mới nhất là 3.3.4, tuy nhiên khi thử nghiệm mình thấy phiên bản này không tương tích với DBT và Hive nên mình sử dụng phiên bản spark thấp hơn là 3.3.2. 
 
 > Lưu ý: Do đã có sẵn cụm Hadoop rồi (bạn xem lại hướng dẫn [tại đây](/huong-dan-cai-hadoop-cluster/)) nên chúng ta chỉ cần cài Spark trên 1 node (mình cái trên `node01`), khi chạy job Spark ta để cấu hình `--master yarn` thì job sẽ được chạy được trên tất cả các node.
 
@@ -110,7 +110,7 @@ scala>
 
 ## Cài đặt Postgresql <a name="install_postgresql"></a>
 
-Bạn có thể cài đặt trực tiếp Posgresql hoặc sử dụng Docker, ở đây mình sẽ cài trực tiếp trên `node01` theo hướng dẫn trên trang chủ [tại đây](install_postgresql).
+Bạn có thể cài đặt trực tiếp Posgresql hoặc sử dụng Docker, ở đây mình sẽ cài trực tiếp trên `node01` theo hướng dẫn trên trang chủ [tại đây](https://www.postgresql.org/download/linux/ubuntu/).
 
 Bật service postgresql
 
