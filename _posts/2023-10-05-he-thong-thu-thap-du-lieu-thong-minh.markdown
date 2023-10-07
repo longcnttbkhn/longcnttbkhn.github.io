@@ -12,7 +12,9 @@ author: Long Nguyen
 description: Bài viết giới thiệu, trình bày các ý tưởng và trải niệm của tác giả trong quá trình xây dựng AI Parser Crawler - Hệ thống thu thập dữ liệu thông minh.
 ---
 
-Chào mọi người, mình đã trở lại rồi đây! Mình rất cảm ơn mọi người thời gian qua đã ủng hộ blog của mình, những góp ý và thắc mắc của các bạn chính là nguồn động lực to lớn đối với mình. Bài viết hôm nay khá là đặc biệt, mình sẽ giới thiệu cho mọi người về một dự án mà mình rất tâm huyết: AI Parser Crawler (APC) - Hệ thống thu thập dữ liệu thông minh, hi vọng mọi người sẽ cảm thấy thích nó. APC được thiết kế để crawl dữ liệu từ nhiều website trong một lĩnh vực cụ thể, có khả năng tự động nhận diện các trang có dữ liệu mục tiêu, tự động trích xuất thông tin cần thiết trên trang. Trong giới hạn bài viết này mình sẽ trình bày tóm tắt những ý tưởng chính, thiết kế và kinh nghiệm khi triển khai dự án, nếu bạn quan tâm và muốn tìm hiểu sâu hơn thì có thể tham khảo luận văn của mình [tại đây](/assets/docs/master_thesis.pdf)
+Chào mọi người, mình đã trở lại rồi đây! Mình rất cảm ơn mọi người thời gian qua đã ủng hộ blog của mình, những góp ý và thắc mắc của các bạn chính là nguồn động lực to lớn đối với mình. Bài viết hôm nay khá là đặc biệt, mình sẽ giới thiệu cho mọi người về một dự án mà mình rất tâm huyết: AI Parser Crawler (APC) - Hệ thống thu thập dữ liệu thông minh, hi vọng mọi người sẽ cảm thấy thích nó.
+
+APC được thiết kế để crawl dữ liệu từ nhiều website mà không cần biết trước cấu trúc, có khả năng tự động nhận diện các trang có dữ liệu mục tiêu, tự động trích xuất thông tin cần thiết trên trang. Trong giới hạn bài viết này mình sẽ trình bày tóm tắt những ý tưởng chính, thiết kế và kinh nghiệm khi triển khai dự án, nếu bạn đọc quan tâm và muốn tìm hiểu sâu hơn thì có thể tham khảo luận văn của mình [tại đây](/assets/docs/master_thesis.pdf)
 
 ## Nội dung
 1. [Giới thiệu tổng quan](#introduction)
@@ -22,19 +24,20 @@ Chào mọi người, mình đã trở lại rồi đây! Mình rất cảm ơn 
 5. [Kết luận](#conclusion)
 
 ## Giới thiệu tổng quan <a name="introduction"></a>
-Ý tưởng cho dự án này xuất hiện khi mình cần maintain một con Crawler dựa trên [Scrapy](https://scrapy.org/), thu thập dữ liệu từ các trang tin rao bất động sản, sử dụng Css selector và xpath parser để trích rút các thông tin từ tin rao như địa chỉ, giá, diện tích, số phòng... Hệ thống đang có gặp một số vấn đề như sau:
-- Khó mở rộng trên nhiều website do phải làm parser cho từng website, trong nhiều trường hợp việc này khá khó khăn.
-- Bộ parser gặp lỗi khi website thay đổi giao diện
-- Khi cần trích xuất thêm thông tin sẽ phải cập nhật parser cho tất cả các website
-APC được xây dựng dựa trên hệ thống đang có và tích hợp thêm các mô hình học máy để có thêm các chức năng thông minh như:
+Ý tưởng cho dự án này xuất hiện khi mình cần maintain một con Crawler dựa trên [Scrapy](https://scrapy.org/), thu thập dữ liệu từ các trang tin rao bất động sản, sử dụng *css selector* và *xpath* parser để trích rút các thông tin từ tin rao như địa chỉ, giá, diện tích, số phòng... Hệ thống đang có gặp một số vấn đề như sau:
+- Mỗi website được xử lý bằng 1 Spider với một bộ parser bóc tách dữ liệu riêng, nếu muốn thu thập thêm từ website khác thì phải code thêm Spider mới.
+- Khi website thay đổi giao diện, cấu trúc thay đổi sẽ khiến Spider buộc phải thay đổi code để đáp ứng.
+- Nếu có nhu cầu trích xuất thêm thông tin thì sẽ phải sửa trên toàn bộ các Spider.
+
+Để giải quyết các vấn đề trên thì ý tưởng của APC là bổ sung thêm một số chức năng như sau:
 - Phân loại để nhận biết các trang có dữ liệu mục tiêu trước cả khi load trang (phân loại theo URL)
 - Bộ Parser trích rút thông tin không cần sử dụng selector hay xpath, không phụ thuộc vào cấu trúc của trang.
 
-Dự án đã được mình triển khai trong 2 sản phẩm ở 2 công ty khác nhau, một ở Cenhomes.vn với bài toán thu thập dữ liệu từ nhiều website bất động sản, một ở Darenft với bài toán tổng hợp so sánh giá listing của 1 NFT trên nhiều chợ. Mỗi bài toán có những yêu cầu cụ thể khác nhau tuy nhiên vẫn sử dụng chung về ý tưởng, giải pháp, thiết kế cùng một số công nghệ opensource như [Fasttext](https://fasttext.cc/), [Web2text](https://github.com/dalab/web2text), [Fonduer](https://github.com/HazyResearch/fonduer).
+Dự án đã được mình triển khai trong 2 sản phẩm ở 2 công ty khác nhau, một ở Cenhomes.vn với bài toán thu thập dữ liệu từ nhiều website bất động sản, một ở Darenft với bài toán tổng hợp so sánh giá listing của 1 NFT trên nhiều chợ. Mỗi bài toán có những yêu cầu cụ thể khác nhau tuy nhiên vẫn sử dụng chung về ý tưởng, giải pháp và thiết kế, cùng một số công nghệ opensource như [Fasttext](https://fasttext.cc/), [Web2text](https://github.com/dalab/web2text), [Fonduer](https://github.com/HazyResearch/fonduer).
 
 ## Phân tích giải pháp <a name="solution_analyst"></a>
 ### Nhận biết trang mục tiêu
-Trong hệ thống crawler bằng Scrapy, crawler sẽ sử dụng các luật được định nghĩa bởi lập trình viên để xác định một URL có có chứa dữ liệu mục tiêu hay không, các luật này sẽ được fix cứng trong code cho từng website (gọi là Spider). APC sử dụng 2 mô hình học máy để xác định trang mục tiêu:
+Trong hệ thống crawler bằng Scrapy, crawler sẽ sử dụng các luật được định nghĩa bởi lập trình viên để xác định một URL có có chứa dữ liệu mục tiêu hay không, các luật này sẽ được fix cứng trong code cho từng website (gọi là Spider). Trong hệ thống APC, mình sử dụng 2 mô hình học máy để xác định trang mục tiêu:
 - *Content Classification Model*: Mô hình phân loại trang dựa trên nội dung, có thể thực hiện việc phân loại trên nhiều website khác nhau.
     - <u>Input</u>: Title, Description, Main text trong trang
     - <u>Ouput</u>: Kết quả phân loại trang
@@ -44,7 +47,7 @@ Trong hệ thống crawler bằng Scrapy, crawler sẽ sử dụng các luật �
 - *URL Classification Model*: Mô hình phân loại trang dựa trên URL, được train riêng cho từng website
     - <u>Input</u>: URL của trang
     - <u>Output</u>: Kết quả phân loại trang
-    - <u>Cách train mô hình</u>: Dự liệu train lấy từ các trang 1 website, sử dụng mô hình phân loại dựa trên nội dung để phân loại và gán nhãn cho các trang sau đó sử dụng kết quả gán nhãn để train mô hình phân loại URL. Đối với mô hình này thì tùy thuộc vào từng trường hợp cụ thể để lựa chọn giải pháp phù hợp. Đối với bài toán ở Cenhomes.vn mình tiếp tục sử dụng Fasttext để train mô hình, còn với bài toán DareNFT mình đã viết một thuật toán để sinh ra pattern url cho website.
+    - <u>Cách train mô hình</u>: Dự liệu train lấy từ các trang 1 website, sử dụng mô hình phân loại dựa trên nội dung để phân loại và gán nhãn cho các trang sau đó sử dụng kết quả gán nhãn để train mô hình phân loại URL. Đối với mô hình này thì tùy thuộc vào từng trường hợp cụ thể để lựa chọn giải pháp phù hợp. Đối với bài toán ở Cenhomes.vn mình tiếp tục sử dụng Fasttext để train mô hình, còn với bài toán ở DareNFT mình đã viết một thuật toán để sinh ra pattern url cho website.
     - <u>Trường hợp sử dụng</u>: Mô hình phân loại trang dựa trên URL được sử dụng riêng để phân loại URL cho từng website, APC sử dụng nó để biết trước URL nào chứa dữ liệu mục tiêu từ đó định hướng việc thu thập.
 
 ### Trích rút thông tin từ trang
@@ -68,7 +71,7 @@ APC gồm có 2 thành phần chính:
 
 ![Sơ đồ các thành phần của hệ thống](/assets/images/blog/bigdata/2023-10-05/ai_crawler_architecture.jpg)
 
-- Website Explorer: Có nhiệm vụ khảo sát và lấy dữ liệu từ website mới được người dùng thêm vào để từ đó train mô hình phân loại trang dựa trên URL cho website đó.
+- Website Explorer: Có nhiệm vụ khảo sát và lấy dữ liệu từ website mới được người dùng thêm vào, từ đó train mô hình phân loại trang dựa trên URL cho website đó.
 - Parser Crawler: Có nhiệm vụ crawl dữ liệu từ các website mà hệ thống đã biết, sử dụng các mô hình để lựa chọn và trích xuất dữ liệu từ các trang mục tiêu trong website.
 
 Dưới đây là sơ đồ luồng hoạt động của APC bao gồm 2 pharse:
@@ -83,16 +86,16 @@ Dưới đây là sơ đồ luồng hoạt động của APC bao gồm 2 pharse:
 
 - Pharse 2: Crawl dữ liệu
 1. Người dùng bắt đầu crawl dữ liệu từ 1 website đã được khảo sát
-2. Parser Crawler tiến hành lấy dữ liệu từ website, sử dụng mô hình phân loại URL để phân loại các url có trong trang từ đó biết được trang nào có dữ liệu mục tiêu để tiến hành thu thập và ưu tiên lấy dữ liệu.
+2. Parser Crawler tiến hành lấy dữ liệu từ website, sử dụng mô hình phân loại URL để phân loại trang, từ đó biết được trang nào có dữ liệu mục tiêu để tiến hành thu thập và ưu tiên lấy dữ liệu.
 3. Với mỗi trang mục tiêu, Parser crawler sử dụng mô hình main detection để trích xuất phần main html và main text sau đó lưu trữ chúng trong Data warehouse (hoặc database), đồng thời cũng sử dụng mô hình trích xuất thông tin để bóc tách nội dung từ main và lưu vào cơ sở dữ liệu.
 
 ## Một số kinh nghiệm rút ra <a name="system_architecture"></a>
 
-Trong quá trình thực hiện dự án mình cũng có rút ra được một số kinh nghiệm, hi vọng có thể giúp ích cho các bạn nếu muốn xây dựng một sản phẩm tương tự:
-- Nên thu thập dữ liệu từ nhiều website khác nhau để có dữ liệu huấn luyện đa dạng hơn
-- Để giảm thiểu công sức cho việc gán nhãn dữ liệu nên tận dụng tối đa các đặc trưng cấu trúc bằng thực hiện việc gán nhãn trên từng website để có thể sử dụng luật css selector hoặc xpath
-- Khi train mô hình chú ý chia dữ liệu tập train và test với các website khác nhau
-- Theo kinh nghiệm của mình thì đối với các mô hình cần hoạt động với nhiều website (bao gồm cả website chưa biết) ta chỉ nên sử dụng các đặc trưng văn bản, không nên sử dụng đặc trưng cấu trúc do rất dễ bị hiện tượng overfiting trên các website nằm trong tập train.
+Trong quá trình thực hiện dự án mình cũng có rút ra được một số kinh nghiệm, hi vọng có thể giúp ích cho bạn đọc nếu muốn xây dựng một sản phẩm tương tự:
+- Nên thu thập dữ liệu từ nhiều website khác nhau để có dữ liệu huấn luyện đa dạng hơn.
+- Để giảm thiểu công sức cho việc gán nhãn dữ liệu, nên tận dụng tối đa các đặc trưng cấu trúc bằng cách thực hiện việc gán nhãn trên từng website, sử dụng luật với sự hỗ trợ của css selector hoặc xpath.
+- Khi train mô hình chú ý chia dữ liệu tập train và test với các website khác nhau.
+- Theo kinh nghiệm của mình thì đối với các mô hình cần hoạt động với nhiều website (bao gồm cả website chưa biết) ta chỉ nên sử dụng các đặc trưng văn bản, không nên sử dụng đặc trưng cấu trúc do rất dễ gặp phải hiện tượng overfiting trên các website nằm trong tập train.
 - Nên lưu trữ lại phần main html và main text và coi việc trích rút thông tin như là một công đoạn transform dữ liệu trên DWH, điều này cho phép chúng ta có thể thực hiện việc bóc tách lại thông tin từ đó tạo điều kiện để cải thiện mô hình về sau.
 
 ## Kết luận <a name="conclusion"></a>
