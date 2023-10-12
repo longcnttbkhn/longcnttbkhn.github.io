@@ -5,7 +5,8 @@ sitemap: false
 ---
 ![Profile Image]({% if site.external-image %}{{ site.picture }}{% else %}{{ site.url }}/{{ site.picture }}{% endif %})
 
-<p>Hi, my name is Long Nguyen from Hanoi, Vietnam. I'm a software engineer with 5 years of product development experience in real estate and blockchain. My favorite job is to design and build big data processing systems for data analysis problems. I graduated from <a href="https://www.hust.edu.vn/">Hust</a> in 2018 and completed my master's defense in 2022. You can get my CV in <a href="/assets/docs/nguyen_hoang_long_data_engineer.pdf">hear</a>.</p>
+<p>Hi, my name is Long, I'm 28 year old, from Vietnam. I graduated as an engineer degree in Information System in 2018 and a master degree in Data Science in 2022. I have 5 years of experience as software engineer, which includes 4 years working as data engineer and 1 year team leader experience. I have skills in working with many programing language such as Java, Python, Scala and Go, among them I'm strong in Python and Java. I'm familiar with many bigdata technologies such as Hadoop, Spark, Hive, Kafka, among them I have deep knowing of Hadoop and Spark. I also have experience in Machine Learning and NLP with a few research project. Currently, I'm continuing to study and share my knowledge through my blog, my goal in 2 next year is to reach the senior level for the position of data engineer.
+
 
 <h2>Skills</h2>
 
