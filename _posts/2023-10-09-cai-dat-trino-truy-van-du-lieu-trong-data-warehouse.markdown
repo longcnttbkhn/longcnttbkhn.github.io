@@ -45,7 +45,7 @@ Trước khi bắt đầu thì mình sẽ giải thích một chút về lý do 
 
 Để truy vấn được data trong DWH thì Trino cần 1 service cung cấp các thông tin về Storage và Metadata, đây chính là việc mà HMS sẽ làm.
 
-Lý thuyết thế thôi giờ chúng ta bắt tay vào cài đặt nhé, mình sẽ thực hiện trên cụm DWH đã có trong bài viết trước, bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1). Đầu tiên chúng ta sẽ lên trang chủ của Hive để download phiên bản hive phù hợp [tại đây](https://dlcdn.apache.org/hive/) mình sẽ sử dụng phiên bản 2.3.9 do đây là phiên bản mà Spark Thrift Server của mình đang sử dụng.
+Lý thuyết thế thôi giờ chúng ta bắt tay vào cài đặt nhé, mình sẽ thực hiện trên cụm DWH đã có trong bài viết trước, bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1). Đầu tiên chúng ta sẽ lên trang chủ của Hive để download phiên bản hive phù hợp [tại đây](https://dlcdn.apache.org/hive/), mình sử dụng phiên bản 2.3.9 do đây là phiên bản mà Spark Thrift Server của mình đang sử dụng.
 > Lưu ý: Muốn biết STS đang dùng Hive version nào bạn chạy job STS lên sau đó vào giao diện SparkUI của job, vào thẻ Environment và tìm cấu hình `spark.sql.hive.version`
 
 ```sh
