@@ -2,201 +2,246 @@
 title: "DWH 3: Cài đặt Trino truy vấn dữ liệu trong Data warehouse"
 layout: post
 date: 2023-10-09 09:00:00 +0700
-image: /assets/images/blog/bigdata/2023-02-11/blockchain-data-analyst.png
+image: /assets/images/blog/bigdata/2023-10-09/trino_ui.jpg
 headerImage: false
 tag:
 - bigdata
-- blockchain
 category: blog
 author: Long Nguyen
-description: Bài viết giới thiệu về hệ thống phân tích dữ liệu blockchain dựa trên hạ tầng Data warehouse Hadoop.
+description: Trong bài viết này mình sẽ hướng dẫn các bạn cách cài đặt và cấu hình Trino làm query engine trong Data warehouse thay thế cho Spark Thrift Server.
 ---
 
-Trong bài viết trước mình đã giới thiệu với các bạn một thiết kế và cài đặt Data Warehouse dựa trên nền tảng Hadoop và một số công nghệ Opensource, bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/). Trong bài viết này mình sẽ sử dụng DWH này để áp dụng cho một bài toán cụ thể là phân tích dữ liệu Blockchain. Do nội dung bài viết sẽ tập trung vào hệ thống phân tích dữ liệu nên mình sẽ không đi quá sâu vào công nghệ Blockchain mà sẽ chỉ trình bày các vấn đề liên quan đến dữ liệu EVM Blockchain để giải thích cho thiết kế của hệ thống.
-
+Trong bài viết trước mình đã giới thiệu với các bạn một thiết kế và cài đặt Data Warehouse dựa trên nền tảng Hadoop và một số công nghệ Opensource, bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/). Thiết kế này sử dụng Spark Thrift Server (STS) là một JDBC/ODBC server cho phép các ứng dụng BI có thể connect vào DWH để yêu cầu thực thi các truy vấn SQL. Tuy nhiên STS khi khởi chạy chỉ tạo ra ra 1 đối tượng Spark Context do đó tại mỗi thời điểm chỉ có 1 truy vấn có thể được thực thi. Để giải quyết vấn đề này thì mình sử dụng Trino làm query engine, nó giúp điều phối tài nguyên hợp lý hơn và chạy được nhiều truy vấn đồng thời. 
 
 # Nội dung
-1. [Sơ lược về EVM Blockchain](#introduction)
-2. [Kiến trúc thiết kế](#design_architecture)
-3. [Scanner](#scanner)
-4. [Decoder](#decoder)
-5. [Spellbook](#spellbook)
-6. [Visualization](#visualization)
-7. [Automation](#automation)
-8. [Kết luận](#conclusion)
+1. [Giới thiệu tổng quan](#introduction)
+2. [Cài đặt Hive Metastore (HMS)](#install-hms)
+3. [Cài đặt và cấu hình Trino trên 1 node](#install-trino)
+4. [Thêm node mới vào cụm Trino](#add-node)
+5. [Kết luận](#conclusion)
 
-## Sơ lược về EVM Blockchain <a name="introduction"></a>
+## Giới thiệu tổng quan <a name="introduction"></a>
 
-Bitcoin cho chúng ta thấy phiên bản đầu tiên của Blockchain là một sổ cái phi tập trung (bạn có thể xem lại bài viết [tại đây](/huong-dan-co-ban-ve-bitcoin/)), nơi mà toàn bộ các giao dịch chuyển tiền được ghi lại. EVM Blockchain là thế hệ tiếp theo của Blockchain, nó bao gồm một lớp các chain ra đời sau này kể từ khi [Ethereum](https://ethereum.org/) được giới thiệu bao gồm rất nhiều chain phổ biến như: Ethereum, Binance Smart Chain, Polygon... (bạn có thể xem thêm trong danh sách [này](https://www.coincarp.com/vi/chainlist/)). Ethereum đã giúp cho Blockchain trở nên linh hoạt và đa dụng hơn thay vì chỉ có thể thực hiện các giao dịch chuyển tiền, mình sẽ tóm tắt lại một số điểm mới của EVM Blockchain như sau:
+[Trino](https://trino.io/) là một SQL query engine phân tán hiệu năng cao dùng cho các hoạt động phân tích dữ liệu lớn, có thể làm việc với rất nhiều datasource khác nhau thông qua các connector, từ đó cho phép việc truy vấn kết hợp nhiều datasource. Trino không phải là Database cũng không phải là Datawarehouse, nó không lưu trữ dữ liệu, nó chỉ cung cấp một giao diện SQL cho người dùng và các ứng dụng khác truy vấn dữ liệu trên các Datasource khác nhau bằng ngôn ngữ SQL. Trino được xây dựng để phù hợp với các tác vụ Online Analyst Processing (OLAP) thay vì Online Transaction Processing (OLTP).
 
-*Smart Contract:* là một chương trình đang nằm trên EVM Blockchain, tương tự như phần mềm nằm trên máy tính. Smart Contract sẽ được kích hoạt khi người dùng gọi đến một chức năng (function) của nó, lúc này Smart Contract sẽ thực thi chức năng đó theo đúng những gì mà nó được lập trình. Smart Contract thường được viết bằng ngôn ngữ [Sodility](https://docs.soliditylang.org/), dưới đây là một ví dụ đơn giản:
+Một số khái niệm trong Trino:
+- *Datasource*: Là một nguồn dữ liệu mà Trino sử dụng, nó có thể là database, hệ thống file (local, hdfs, s3...), google sheet excel, elasticsearch, thậm chí cả kafka... Trino sử dụng connector tương ứng với từng datasource để kết nối với chúng.
+- *Connector*: Đóng vai trò như người phiên dịch giữa Trino và các Datasource, bạn có thể xem danh sách các datasource đầy đủ [tại đây](https://trino.io/docs/current/connector.html)
+- *Catalog*: Là một khai báo về một Datasource trong Trino, một khai báo catalog bao gồm tên connector và các cấu hình thích hợp để Trino có thể sử dụng Datasource. Trong SQL thì catalog là cấp đầu tiên khi cần gọi đến 1 table: \<catalog\>.\<schema\>.\<table\>
+- *Schema*: là một nhóm được đặt tên gồm nhiều bảng trong catalog, nó tương đương với khái niệm database trong các cơ sở dữ liệu quan hệ.
+- *Table*: là một bảng chứa dữ liệu, sử dụng SQL người dùng có thể tạo, thay đổi, truy vấn hoặc thêm dữ liệu vào bảng.
 
-{% highlight javascript %}
-// SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.4.16 <0.9.0;
+Trino là một query engine phân tán tức là nó có thể được cài đặt trên nhiều node và kết hợp cùng nhau thành 1 cụm (cluster). Cụm Trino cũng được thiết kế theo kiến trúc master-slaves, có một node làm master đóng vài trò quản lý, điều phối, lập lịch cho cả cụm và các node slave đóng vai trò thực thi các nhiệm vụ được giao bởi master. Các thành phần trong cụm Trino bao gồm:
+- *Coordinator*: Đóng vai trò master trong cụm Trino, là server để nhận truy vấn SQL từ client, phân tích cú pháp, lên kế hoạch thực thi và giao nhiệm vụ cho các Worker, tổng hợp kết quả từ các worker và trả về cho client.
+- *Worker*: Đóng vai trò là node slave trong cụm Trino, nó tiếp nhận và xử lý nhiệm vụ được giao bởi Coordinator.
 
-contract SimpleStorage {
-    uint storedData;
+## Cài đặt Hive Metastore (HMS) <a name="install-hms"></a>
 
-    function set(uint x) public {
-        storedData = x;
-    }
+Trước khi bắt đầu thì mình sẽ giải thích một chút về lý do vì sao chúng ta lại cần HMS. Nếu các bạn còn nhớ, trong bài viết trước khi mình cài Data warehouse (bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/#install_hive)) mình đã làm 2 việc:
+- Một là tạo và cấu hình thư mục lưu trữ dữ liệu trong DWH, một thư mục trên HDFS: `hdfs://node01:9000/user/hive/warehouse`
+- Hai là tạo và hình nơi lưu trữ metadata cho DWH, một cơ sở dữ liệu trong postgresql: `jdbc:postgresql://node01:5432/metastore` 
 
-    function get() public view returns (uint) {
-        return storedData;
-    }
-}
-{% endhighlight %}
+Đây chính là 2 thành phần để tạo nên một Data warehouse là *Storage* và *Metadata*. Trong đó Storage là nơi dữ liệu được lưu trữ còn Metadata là nơi lưu trữ các thông tin như các schema (database), các table, cấu trúc của table, loại table, nơi lưu trữ dữ liệu của table trong Storage... Chỉ cần có 2 thành phần này thì một query engine đã có thể truy vấn dữ liệu trong DWH, trong bài viết trước mình đã sử dụng Spark Thrift Server để làm query engine server, tuy nhiên cũng có thể thao tác với DWH bằng Spark SQL (xem thêm [tại đây](https://spark.apache.org/docs/latest/sql-distributed-sql-engine.html)) hoặc trong một spark job (xem thêm [tại đây](https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html))
 
-*Ethereum Virtual Machine (EVM):* Là máy ảo chạy trên các node của EVM Blockchain dùng để thực thi các chức năng của Smart Contract.
+Để truy vấn được data trong DWH thì Trino cần 1 service cung cấp các thông tin về Storage và Metadata, đây chính là việc mà HMS sẽ làm.
 
-*Native cryptocurrency:* Là đồng tiền chính trên mỗi chain, ví dụ trên Ethereum là Ether (ETH), Binance Smart Chain là Binance (BNB). Native cryptocurrency được tạo ra tuỳ theo cơ chế của mỗi chain khác nhau, và được sử dụng để trả phí giao dịch trên chain đó.
-
-*Transaction:* Khi người dùng thực hiện việc chuyển tiền, deploy contract (đưa một contract mới lên blockchain) hay thực hiện một chức năng của Smart Contract thì sẽ tạo ra một giao dịch.
-
-*Gas:* Là đơn vị để đo lường khối lượng tính toán của EVM khi thực hiện một giao dịch. Để thực hiện được giao dịch thì người dùng phải trả phí gas cho mạng lưới.
-
-*Token Standards:* Là các chuẩn cho Smart Contract cho Token, nó bao gồm các chức năng mà một Smart Contract cần phải có để đạt chuẩn, dưới dây là 3 Torken Standards phổ biến trên EVM Blockchain:
-    
- * [ERC20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/): Là một chuẩn token rất giống với Native Cryptocurrency tức là bạn có thể lưu trữ nó trong ví, thực hiện chuyển token, điểm khác biệt là ERC20 được tạo ra từ Contract nên nó linh hoạt và đa dụng hơn nhiều so với Native Cryptocurrency. Các Stable Coin (Token có giá được neo với một đồng tiền pháp định: VD USDT, BUSD...), Wrap Token (Token thay thế cho Native Cryptocurrency vd: WBNB, WBTC...) đều thuộc ERC20.
-* [ERC721](https://ethereum.org/en/developers/docs/standards/tokens/erc-721/): Là chuẩn token của NFT (Non-fungible Token), mỗi token của một contract là khác biệt nhau và không thay thế được cho nhau, được dùng để định danh tài sản số.
-* [ERC1155](https://ethereum.org/en/developers/docs/standards/tokens/erc-1155/): Cũng là chuẩn token của NFT tuy nhiên mỗi token của một contract có thể chia nhỏ được.
-
-*Blockchain Explorer* Để có thể hiểu được những gì đã, đang diễn ra trên EVM Blockchain chúng ta cần sử dụng Blockchain Explorer là một trang web cho phép người dùng tra cứu thông tin, xem dữ liệu trên blockchain một cách thân thiện hơn. VD: [etherescan.io](https://etherscan.io/), [bscscan.com](https://bscscan.com/), [polygonscan.com](https://polygonscan.com/)...
-
-## Kiến trúc thiết kế <a name="design_architecture"></a>
-
-Để thiết kế hệ thống này mình có tham khảo những mô tả của [Dune Analyst](https://dune.com/docs/)  một startup cung cấp hạ tầng phân tích dữ liệu Blockchain, được định giá tới 1 tỷ đô vào thời điểm tháng 2/2022.
-
-<p style="
-    text-align: center;
-"><img src="/assets/images/blog/bigdata/2023-02-11/bi-architecture.jpg" alt="BI Architecture" width="100%"></p>
-
-- Scanner: Có chức năng quét dữ liệu từ EVM blockchain thông qua Node service và lưu trữ dữ liệu raw vào DWH.
-- Decoder: Dữ liệu raw trên EVM blockchain là dữ liệu đã được mã hoá do đó Decoder đóng vai trò giải mã dữ liệu raw thành dữ liệu Source data có cấu trúc để dễ dàng sử dụng.
-- Spellbook: Là một tập hợp các bảng dữ liệu được công khai bởi Dune để phục vụ mục đích phân tích dữ liệu trên EVM blockchain, bạn có thể tham khảo source code của Spellbook [tại đây](https://github.com/duneanalytics/spellbook) 
-- Các thành phần khác như: DBT, Airflow, Superset mình đã giới thiệu trong bài viết trường, bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/#design_architecture).
-
-## Scanner <a name="scanner"></a>
-
-Trước khi nói về Scanner mình sẽ mô tả qua một chút về dữ liệu trên EVM Blockchain. Mình sẽ lấy một ví dụ là một giao dịch [Transfer](https://etherscan.io/tx/0xc3b4f70cbf9d8ecb89687cfa73e1af879c60ff124c3c75208931f74231d78129) của USDT, một stable coin chuẩn ERC20 trên mạng Ethereum. Ở tab overiew bạn có thể nhìn thấy các thông tin sau (click vào more detail để xem toàn bộ thông tin):
-
-- Transaction Hash: là định danh duy nhất của transaction này, bạn có thể sử dụng TxHash để tìm chính xác transaction.
-- Status: Trạng thái của giao dịch thường là Success hoặc Pending
-- Block: Blocknumber của transaction, cho biết transaction này được đóng trong block nào.
-- From: Địa chỉ ví của thực hiện transaction
-- To: Địa chỉ nhận yêu cầu, ở đây chính là địa chỉ contract của token USDT.
-- Value: số ETH (Native cryptocurrency) được gửi đến cho contract.
-- Transaction fee: Phí giao dịch tính bằng ETH
-- Gas Price: Giá gas tại thời điểm giao dịch tính bằng ETH
-- Gas Limit & Usage: Số gas tối đa và số gas đã sử dụng cho transaction
-- Burnt & Txn Savings Fees: Số ETH bị burn và số eth được trả lại cho validator khi thực hiện giao dịch. Bạn có thể xem thêm về cơ chế mint burn của ethereum [tại đây](https://ethereum.org/en/developers/docs/intro-to-ether/).
-- Input Data: dữ liệu được gửi kèm khi thực hiện giao dịch, trong giao dịch này chính là lời gọi thực hiện chức năng transfer của contract. Bạn có thể click vào View input as Original để xem dữ liệu dạng raw hoặc Decode input data để xem dữ liệu sau khi giải mã.
-
-Chuyển qua tab logs bạn sẽ nhìn thấy danh sách các log được phát ra khi thực hiện giao dịch này, mỗi event log bao gồm các thông tin sau:
-- Address: địa chỉ contract phát ra event log này, ở đây chính là contract của token USDT
-- Name: Tên của event log
-- Topics: chứa các thông tin được đánh index trong event log, trong đó topic[0] là signature (định danh duy nhất) của event log này, dùng để phân biệt event này với event khác.
-- Data: Dữ liệu trong event log.
-
-Scanner sẽ thực hiện việc lấy dữ liệu raw transaction và event log từ Node Service và lưu xuống DWH, mình sử dụng thư viện [Web3j](https://docs.web3j.io/) để lấy lấy dữ liệu từ Node Service. Dưới đây là một đoạn code mẫu bằng ngôn ngữ Scala để các bạn tham khảo:
-
-```scala
-import org.web3j.protocol.Web3j
-import com.google.gson.Gson
-
-val rpcUrl = <URL_YOUR_RPC_SERVICE>
-val web3 = Web3j.build(new HttpService(rpcUrl))
-val gson = new Gson()
-
-val blockNumber = new DefaultBlockParameterNumber(1234)
-val query = new EthFilter(blockNumber, blockNumber, java.util.Collections.emptyList[String]())
-val eventlogs =  gson.toJson(web3.ethGetLogs(query).sendAsync().get().getLogs)
-println(eventlogs)
-
-val blockData = web3.ethGetBlockByNumber(blockNumber, true).sendAsync().get().getBlock
-val transactions = gson.toJson(blockData)
-println(transactions)
-```
-
- Với số lượng block cần lấy dữ liệu là rất lớn: 16,6 triệu block trên Ethereum và 25,6 triệu block trên BSC nên để có thể sử dụng được tối đa số lượng request đến Node Service, mình sử dụng Spark để thực hiện việc scan nhiều block song song với nhau.
-
- Kết quả chạy đến thời điểm hiện tại như sau:
-
-- Dữ liệu Event Log:
-    - BSC Chain:
-        - Số block: 23490000
-        - Dung lượng: 1,2 TB
-    - ETH chain:
-        - Số block: 16230000
-        - Dung lượng: 325.6 GB
-- Dữ liệu Transaction:
-    - BSC Chain:
-        - Số block: 18900000
-        - Dung lượng: 1,2 TB
-
-## Decoder <a name="decoder"></a>
-
-Dữ liệu sau khi được lấy về là dữ liệu raw đã được mã hoá, để giải mã được nó ta cần có ABI (Application Binary Interface) của contract. ABI giống như một bản hướng dẫn kỹ thuật cho phép chúng ta có thể decode được dữ liệu raw thành dữ liệu có cấu trúc và mang ý nghĩa rõ ràng phù hợp cho việc phân tích. Chi tiết về ABI các bạn có thể xem [tại đây](https://docs.soliditylang.org/en/v0.8.17/abi-spec.html). Để lấy được ABI của contract chúng ta có thể sử dụng Blockchain Explorer, ví dụ với contract token USDT bạn có thể vào [đây](https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7#code), trong trang này bạn có thể nhìn thấy cả mã nguồn và ABI của contract. Decoder được thiết kế bao gồm CMS cho phép người dùng upload file ABI của contract (do không phải contract nào cũng có ABI đầy đủ trên Explorer), decoder sẽ giải mã dữ liệu raw và đẩy vào decoded table, bạn có thể xem mô tả về decoded table [tại đây](https://dune.com/docs/tables/decoded/). Dưới đây là một đoạn code mẫu decode dữ liệu event log và function call data để các bạn tham khảo:
-
-```scala
-import com.esaulpaugh.headlong.abi.{Event, Function}
-import com.esaulpaugh.headlong.util.Strings
-import org.web3j.abi.EventEncoder
-import java.util
-
-val eventABIJson = <String abi json of one event>
-val e = Event.fromJson(eventABIJson)
-val eventSignature = EventEncoder.buildEventSignature(e.getCanonicalSignature)
-println(eventSignature)
-
-val topic1, topic2, topic3, topic4: String // Topics of one Event
-val data: String // Data of one Event
-
-val topics = new util.ArrayList[Array[Byte]]
-topics.add(Strings.decode(topic1.replace("0x", "")))
-    if (topic2 != null && topic2 != "") {
-        topics.add(Strings.decode(topic2.replace("0x", "")))
-}
-if (topic3 != null && topic3 != "") {
-    topics.add(Strings.decode(topic3.replace("0x", "")))
-}
-if (topic4 != null && topic4 != "") {
-    topics.add(Strings.decode(topic4.replace("0x", "")))
-}
-
-val extractedData = e.decodeArgs(topics.toArray(new Array[Array[Byte]](topics.size())), Strings.decode(data.replace("0x", "")))
-println(extractedData)
-
-val functionABIJson = <String abi json of one Function>
-val f = Function.fromJson(functionABIJson)
-val methodId = Strings.encode(f.selector())
-println(methodId)
-
-val data: String // Input of one Transaction
-val extractedData = f.decodeCall(Strings.decode(data.replace("0x", "")))
-println(extractedData)
-
-```
-
-## Spellbook <a name="spellbook"></a>
-
-Sau khi lấy [source code]() của Spellbook về bạn tiến hành cài đặt theo hướng dẫn [tại đây](http://localhost:4000/cai-dat-data-warehouse-tren-hadoop-phan-1/#install_dbt), kiểm tra doc của Spellbook trên giao diện:
-
-![DBT Screen](/assets/images/blog/bigdata/2023-02-11/dbt-home-screen.png)
-
-Để chạy riêng từng bảng trên Spellbook bạn dùng command sau:
+Lý thuyết thế thôi giờ chúng ta bắt tay vào cài đặt nhé, mình sẽ thực hiện trên cụm DWH đã có trong bài viết trước, bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1). Đầu tiên chúng ta sẽ lên trang chủ của Hive để download phiên bản hive phù hợp [tại đây](https://dlcdn.apache.org/hive/) mình sẽ sử dụng phiên bản 2.3.9 do đây là phiên bản mà Spark Thrift Server của mình đang sử dụng.
+> Lưu ý: Muốn biết STS đang dùng Hive version nào bạn chạy job STS lên sau đó vào giao diện SparkUI của job, vào thẻ Environment và tìm cấu hình `spark.sql.hive.version`
 
 ```sh
-$ dbt run --select +<model_name>
+$ wget https://dlcdn.apache.org/hive/hive-2.3.9/apache-hive-2.3.9-bin.tar.gz
+$ tar -xvzf apache-hive-2.3.9-bin.tar.gz
+$ mv apache-hive-2.3.9-bin /lib/hive
+$ mkdir /lib/hive/logs
+$ chgrp hadoop -R /lib/hive
+$ chmod g+w -R /lib/hive
 ```
 
-Trước khi chạy một model bạn cần phải kiểm tra các bảng dữ liệu mà nó phụ thuộc vào đã có đủ hay chưa bằng cách kiểm tra DAG Graph của model đó. Ví dụ mình muốn chạy model: `tofu_bnb_trades` có DAG Graph như sau:
+Bổ sung biến môi trường `/etc/bash.bashrc`
 
-![Spellbook DAG](/assets/images/blog/bigdata/2023-02-11/spellbook-dag.png)
+```sh
+export HIVE_HOME=/lib/hive
+export PATH=$HIVE_HOME/bin:$PATH
+```
+Cập nhật biến môi trường
 
-Ta thấy rằng model này đang phụ thuộc vào các datasource (green) vì vậy ta cần chuẩn bị các bảng dữ liệu datasource (bằng cách sử dụng Decoder hoặc lấy thêm dữ liệu từ nguồn khác) trước khi có thể chạy được model này.
+```sh
+$ source /etc/bash.bashrc
+```
+
+Copy cấu hình và thư viện từ Spark sang
+
+```sh
+$ cp $SPARK_HOME/conf/hive-site.xml $HIVE_HOME/conf/
+$ cp $SPARK_HOME/jars/postgresql-42.5.1.jar $HIVE_HOME/lib/
+```
+
+Run HMS trên user hive
+
+```sh
+[hive]$ hive --service metastore &
+```
+
+Mặc định HMS sẽ được chạy trên port `9083` bạn có thể thay đổi nó bằng cấu hình `hive.metastore.port` trong file `$HIVE_HOME/conf/hive-site.xml`
+
+## Cài đặt và cấu hình Trino trên 1 node <a name="install-trino"></a>
+
+Bạn lên trang chủ của Trino để [tại đây](https://trino.io/docs/current/release.html) tìm phiên bản phù hợp cho hệ thống, mình lựa chọn phiên bản Trino 389 do đây là phiên bản mới nhất còn hỗ trợ java 11.
+> Lưu ý: bạn có thể update java lên phiên bản mới nhất để sử dụng Trino latest version theo hướng dẫn [tại đây](https://trino.io/docs/current/installation/deployment.html)
+
+```sh
+$ wget https://repo1.maven.org/maven2/io/trino/trino-server/389/trino-server-389.tar.gz
+$ tar -xvzf trino-server-389.tar.gz
+$ mv trino-server-389 /lib/trino
+$ mkdir /lib/trino/logs
+$ chgrp hadoop -R /lib/trino
+$ chmod g+w -R /lib/trino
+```
+
+Bổ sung biến môi trường `/etc/bash.bashrc`
+
+```sh
+export TRINO_HOME=/lib/trino
+export PATH=$TRINO_HOME/bin:$PATH
+```
+Cập nhật biến môi trường
+
+```sh
+$ source /etc/bash.bashrc
+```
+
+Tạo lần lượt các file cấu hình như sau:
+
+- `$TRINO_HOME/etc/config.properties`
+
+```sh
+coordinator=true
+node-scheduler.include-coordinator=true
+http-server.http.port=8080
+discovery.uri=http://node01:8080
+```
+
+- `$TRINO_HOME/etc/jvm.config`
+
+```sh
+-server
+-Xmx16G
+-XX:InitialRAMPercentage=80
+-XX:MaxRAMPercentage=80
+-XX:G1HeapRegionSize=32M
+-XX:+ExplicitGCInvokesConcurrent
+-XX:+ExitOnOutOfMemoryError
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:-OmitStackTraceInFastThrow
+-XX:ReservedCodeCacheSize=512M
+-XX:PerMethodRecompilationCutoff=10000
+-XX:PerBytecodeRecompilationCutoff=10000
+-Djdk.attach.allowAttachSelf=true
+-Djdk.nio.maxCachedBufferSize=2000000
+-XX:+UnlockDiagnosticVMOptions
+-XX:+UseAESCTRIntrinsics
+-Dfile.encoding=UTF-8
+# Disable Preventive GC for performance reasons (JDK-8293861)
+#-XX:-G1UsePreventiveGC  
+# Reduce starvation of threads by GClocker, recommend to set about the number of cpu cores (JDK-8192647)
+-XX:GCLockerRetryAllocationCount=32
+```
+
+- `$TRINO_HOME/etc/log.properties`
+
+```sh
+io.trino=INFO
+```
+
+- `$TRINO_HOME/etc/node.properties`
+
+```sh
+node.environment=production
+node.id=node01
+node.data-dir=/home/trino/data
+```
+
+- `$TRINO_HOME/etc/catalog/hive.properties`
+
+```sh
+connector.name=delta-lake
+hive.metastore.uri=thrift://node1:9083
+hive.metastore-cache.cache-partitions=false
+```
+
+> Lưu ý: Ở đây mình sử dụng connector `delta-lake` để Trino có thể làm việc với Delta table
+
+Cài đặt python
+
+```sh
+$ ln -s /usr/bin/python3 /usr/bin/python
+```
+
+Tạo user trino
+
+```sh
+$ useradd -g hadoop -m -s /bin/bash trino
+```
+
+Run Trino trên user trino
+
+```sh
+[trino]$ launcher start
+```
+
+Kiểm tra trạng thái của Trino
+
+```sh
+[trino]$ launcher status
+```
+
+Xem giao diện TrinoUI: `http://node01:8080/ui/`
+
+![Trino UI](/assets/images/blog/bigdata/2023-10-09/trino_ui.jpg)
+
+Cài đặt Trino CLI
+
+```sh
+$ wget https://repo1.maven.org/maven2/io/trino/trino-cli/389/trino-cli-389-executable.jar
+$ mv trino-cli-389-executable.jar $TRINO_HOME/bin/trino
+$ chmod +x $TRINO_HOME/bin/trino
+$ trino http://node01:8080/hive
+```
+
+Chạy một số lệnh trên Trino CLI
+
+```sql
+trino> show catalogs;
+trino> show schemas;
+trino> select * from ...
+```
+
+Tắt Trino
+
+```sh
+[trino]$ launcher stop
+```
+
+## Thêm node mới vào cụm Trino <a name="install-trino"></a>
+
+Để thêm node mới vào cụm Trino đang có, bạn lặp lại các bước ở trên và sửa lại 2 file cấu hình:
+ 
+- `$TRINO_HOME/etc/config.properties``
+
+```sh
+coordinator=false
+http-server.http.port=8080
+discovery.uri=http://node01:8080
+```
+
+- `$TRINO_HOME/etc/node.properties`
+
+```sh
+node.environment=production
+node.id=node02
+node.data-dir=/home/trino/data
+```
 
 ## Kết luận <a name="conclusion"></a>
 
-Bài viết hôm nay đến đây thôi, mình sẽ tiếp tục viết thêm nội dung cho cho bài viết này trong các lần cập nhật tiếp theo nhé. Hẹn gặp lại các bạn
+Trong bài viết này mình đã hướng dẫn cách cài đặt Trino làm query engine server để thay thế cho Spark Thrift Server, chúc các bạn thành công!
