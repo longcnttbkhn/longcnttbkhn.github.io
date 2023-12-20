@@ -119,7 +119,7 @@ spark-submit --class Main \
 
 Trước hết bạn cần cài đặt Spark lên cụm Hadoop theo hướng dẫn [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/#install_spark). Lưu ý rằng do Spark sẽ sử dụng Yarn làm Cluster Manager nên bạn chỉ cần cài Spark trên 1 node và sẽ thực thi các job spark trên chính node đó.
 
-Tiếp theo bạn kéo code từ git về node đã cài Spark và chạy job trong thưc mục `run/product`, lưu ý cần sửa cấu hình `--master` trong file `run.sh` từ `local[*]` sang `yarn`. 
+Tiếp theo bạn kéo code từ git về node đã cài Spark và chạy job trong thư mục `run/product`, lưu ý cần sửa cấu hình `--master` trong file `run.sh` từ `local[*]` sang `yarn`. 
 
 Khi một ứng dụng Spark đang chạy ta có thể theo dõi nó trên giao diện [Spark UI](http://driver:4040)
 

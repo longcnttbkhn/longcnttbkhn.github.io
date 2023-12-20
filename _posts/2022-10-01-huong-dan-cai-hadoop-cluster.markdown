@@ -66,7 +66,7 @@ Tạo ssh-key trên mỗi user
 
 ```sh
 $ su <username>
-$ ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+$ ssh-keygen -m PEM -P '' -f ~/.ssh/id_rsa
 $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 $ chmod 0600 ~/.ssh/authorized_keys
 ```
@@ -180,6 +180,14 @@ Thiết lập cấu hình cho Hadoop
     <property>
         <name>yarn.resourcemanager.hostname</name>
         <value>node01</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>-1</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.resource.detect-hardware-capabilities</name>
+        <value>true</value>
     </property>
 </configuration>
 {% endhighlight %}
