@@ -25,13 +25,16 @@ Thông qua các thử nghiệm trong bài viết giới thiệu về HDFS (bạn
 
 Trước hết mình sẽ nhắc lại một chút về vai trò của Namenode trong hệ thống HDFS, nó là node quản lý, nơi lưu trữ thông tin Metadata như tên file, cây thư mục, quyền truy cập, vị trí của các block trong Datanode. Nhờ có Namenode mà việc đọc ghi dữ liệu trên HDFS trở nên đơn giản như trên hệ thống file thông thường, Namenode giống như một tấm bản đồ trong hệ thống HDFS. Bất kỳ thao tác đọc ghi dữ liệu nào trên HDFS đều phải đi qua Namenode, điều này khiến cho nó trở thành điểm yếu huyệt trong toàn hệ thống.
 
-Để giải quyết vấn đề này, hệ thống HDFS cần có nhiều Namenode hơn, tuy nhiên điều này không có nghĩa là tất cả các Namenode có thể cùng nhau hoạt động. Trong môi trường đa ứng dụng, đa luồng và phân tán, việc có nhiều Namenode cùng hoạt động chắc chắn sẽ dẫn xung đột nếu không có cơ chế đồng thuận. Trong thực tế, kiến trúc HDFS với HA chỉ cho phép 1 Namenode hoạt động (active) tại 1 thời điểm, nó sẽ tiếp nhận các yêu cầu đọc và ghi dữ liệu và cập nhật Metadata. Các Namenode khác ở hoạt động ở chế độ chờ (Standby) chúng sẽ liên tục đồng bộ dữ liệu từ Active Namenode để đảm bảo dữ liệu Metadata của chúng luôn được cập nhật mới nhất từ Active NameNode. 
+Để giải quyết vấn đề này, hệ thống HDFS cần có nhiều Namenode hơn, tuy nhiên điều này không có nghĩa là tất cả các Namenode có thể cùng nhau hoạt động. Trong môi trường đa ứng dụng, đa luồng và phân tán, việc có nhiều Namenode cùng hoạt động chắc chắn sẽ dẫn xung đột nếu không có cơ chế đồng thuận. Trong thực tế, kiến trúc HDFS với HA chỉ cho phép 1 Namenode hoạt động (active) tại 1 thời điểm, nó sẽ tiếp nhận các yêu cầu đọc ghi dữ liệu và cập nhật Metadata. Các Namenode khác ở hoạt động ở chế độ chờ (Standby) chúng sẽ liên tục đồng bộ dữ liệu từ Active Namenode để đảm bảo dữ liệu Metadata của chúng luôn được cập nhật mới nhất từ Active NameNode. 
 
-Khi Active Namenode bị lỗi, 1 Standby Namenode khác sẽ được kích hoạt để trở thành Active Namenode mới. Việc lựa chọn Standby Namenode sử dụng thuật toán bầu lãnh đạo (Leader Election).
+Khi Active Namenode bị lỗi, 1 Standby Namenode khác sẽ được kích hoạt để trở thành Active Namenode mới. Việc lựa chọn Standby Namenode sử dụng thuật toán bầu lãnh đạo (Leader Election), sau đây là kiến trúc của hệ thống HDFS với High Availability.
 
 ## Kiến trúc hệ thống <a name="introduction"></a>
 
-![HDFS HA Architecture](/assets/images/blog/bigdata/2023-12-20/hdfs-ha.png)
+
+<p style="
+    text-align: center;
+"><img src="/assets/images/blog/bigdata/2023-12-20/hdfs-ha.png" alt="HDFS HA Architecture" width="550"></p>
 
 * *Active Namenode*: Namenode đang được kích hoạt ở trạng thái hoạt động, đóng vai trò là Namenode chính để quản lý và lưu trữ thông tin Metadata cho hệ thống HDFS.
 * *Standby Namenode*: Các Namenode ở chế độ chờ, chúng sẽ đồng bộ dữ liệu Metadata từ Active Namenode 
@@ -40,7 +43,7 @@ Khi Active Namenode bị lỗi, 1 Standby Namenode khác sẽ được kích ho�
 
 ## Cài đặt và cấu hình <a name="install_zookeeper"></a>
 
-Mình sẽ thực hiện việc upgrade HA cho cụm Hadoop đang có (bạn có thể xem lại cách cài đặt [tại đây](/huong-dan-cai-hadoop-cluster/)). Cụm hadoop hiện tại đã có Namenode trên *node01*, mình sẽ cấu hình để có thêm 1 Namnode nữa trên *node02*.
+Mình sẽ kích hoạt HA cho cụm Hadoop đang có (bạn có thể xem lại cách cài đặt [tại đây](/huong-dan-cai-hadoop-cluster/)). Cụm hadoop hiện tại đã có Namenode trên *node01*, mình sẽ cấu hình để có thêm 1 Namnode nữa trên *node02*.
 
 Đầu tiên chúng ta sẽ cài Zookeeper, bạn có thể tìm thấy phiên bản mới nhất của Zookeeper [tại đây](https://zookeeper.apache.org/releases.html#download)
 
@@ -76,7 +79,7 @@ Chạy Zookeeper service:
 [zookeeper]$ /lib/zookeeper/bin/zkServer.sh start
 ```
 
-Tiếp theo chúng ta sẽ cấu hình cho Namenode cho *node02*, cần lưu ý rằng việc cấu hình phải thực hiện trên tất cả các node của cụm Hadoop. Trước khi bắt đầu mình sẽ shutdown cụm Hadoop: 
+Tiếp theo mình sẽ cấu hình để *node02* trở thành Namenode, cần lưu ý rằng việc cấu hình phải thực hiện trên tất cả các node của cụm Hadoop. Trước khi bắt đầu mình sẽ shutdown cụm Hadoop: 
 
 Trên *node01*
 
@@ -99,11 +102,11 @@ Bổ sung cấu hình cho file `$HADOOP_HOME/etc/hadoop/hdfs-site.xml`
     </property>
     <property>
         <name>dfs.namenode.rpc-address.mycluster.nn1</name>
-        <value>node01:8020</value>
+        <value>node01:9000</value>
     </property>
     <property>
         <name>dfs.namenode.rpc-address.mycluster.nn2</name>
-        <value>node02:8020</value>
+        <value>node02:9000</value>
     </property>
     <property>
         <name>dfs.namenode.http-address.mycluster.nn1</name>
@@ -169,23 +172,92 @@ Sau khi đã thực hiện việc cấu hình trên tất cả các node, tiếp
 Bật Namenode trên *node01*
 
 ```sh
-[hdfs]$ $HADOOP_HOME/bin/hdfs --daemon start namenode
+hdfs@node01:~$ $HADOOP_HOME/bin/hdfs --daemon start namenode
 ```
 
 Khởi tạo dữ liệu name cho *node02*
 
 ```sh
-[hdfs]$ hdfs namenode -bootstrapStandby
+hdfs@node02:~$ hdfs namenode -bootstrapStandby
 ```
 
 Trở lại *node1* để khởi tạo dữ liệu trong Zookeeper, sau đó tắt Namenode trên *node01*
 
 ```sh
-[hdfs]$ hdfs zkfc -formatZK
-[hdfs]$ $HADOOP_HOME/bin/hdfs --daemon stop namenode
+hdfs@node01:~$ hdfs zkfc -formatZK
+hdfs@node01:~$ $HADOOP_HOME/bin/hdfs --daemon stop namenode
 ```
 
 Đến đây việc cài đặt và cấu hình đã xong, giờ chúng ta sẽ thử nghiệm xem sao nhé
 
 ## Thử nghiệm <a name="test"></a>
 
+Bật lại tất cả các service của Hadodop 
+```sh
+hdfs@node01:~$ $HADOOP_HOME/sbin/start-all.sh
+```
+
+Kiểm tra trên giao diện Namenode của *node01* và *node02*:
+
+- `http://node01:9870/dfshealth.html#tab-overview`
+![Namenode 01](/assets/images/blog/bigdata/2023-12-20/mycluster-nn1.png)
+
+- `http://node02:9870/dfshealth.html#tab-overview`
+![Namenode 02](/assets/images/blog/bigdata/2023-12-20/mycluster-nn2.png)
+
+Bạn có thể thấy rằng Namenode 02 đang được active, còn Namenode 01 đang standby, giờ mình sẽ tắt namenode 02 để xem chuyện gì sẽ xảy ra
+
+Trên node02:
+```sh
+hdfs@node02:~$ $HADOOP_HOME/bin/hdfs --daemon stop namenode
+```
+
+Lúc này namenode01 được kích hoạt để chuyển trạng thái thành active:
+
+- `http://node01:9870/dfshealth.html#tab-overview`
+![Namenode 01](/assets/images/blog/bigdata/2023-12-20/mycluster-nn1-active.png)
+
+Để kiểm tra và chuyển trạng thái của các namenode bằng tay chúng ta có thể sử dụng tiện ích haadmin:
+
+```sh
+hdfs@node01:~$ hdfs haadmin [-ns <nameserviceId>]
+    [-transitionToActive <serviceId>]
+    [-transitionToStandby <serviceId>]
+    [-failover [--forcefence] [--forceactive] <serviceId> <serviceId>]
+    [-getServiceState <serviceId>]
+    [-getAllServiceState]
+    [-checkHealth <serviceId>]
+    [-help <command>]
+```
+
+> Lưu ý: Khi kích hoạt HA trên HDFS, chúng ta sẽ cần cấu hình lại các ứng dụng có sử dụng HDFS:
+
+Cấu hình lại file `$SPARK_HOME/conf/hive-site.xml` và `$HIVE_HOME/conf/hive-site.xml`:
+
+```xml
+<configuration>
+...
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>hdfs://mycluster/user/hive/warehouse</value>
+        <description>location of default database for the warehouse</description>
+    </property>
+...
+</configuration>
+```
+
+Thay đổi location của schema và table trong datawarehouse
+
+```sh
+root@node01:~$ hive --service metatool -updateLocation hdfs://mycluster hdfs://node1:9000
+```
+
+Cấu hình hive catalog trong Trino `$TRINO_HOME/etc/catalog/hive.properties`:
+
+```sh
+hive.config.resources=/lib/hadoop/etc/hadoop/core-site.xml,/lib/hadoop/etc/hadoop/hdfs-site.xml
+```
+
+## Kết luận <a name="conclusion"></a>
+
+Trong bài viết này mình đã trình với các bạn cách Enable HA trên hệ thống HDFS, việc này sẽ giúp cho hệ thống HDFS hoạt động với khả năng sẵn sàng cao, từ đó năng cao tính ổn định cho toàn hệ thống. Hẹn gặp lại các bạn trong các bài viết tiếp theo.
