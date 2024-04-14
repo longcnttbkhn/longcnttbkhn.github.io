@@ -108,7 +108,7 @@ Below is a diagram of Three-tier infrastructure deployment on AWS for this syste
 "><img src="/assets/images/blog/bigdata/2024-04-10/deployment-infrastructure.png" alt="Technical components" width="550"></p>
 
 - *Presentation tier*: Deploy the BI Metabase tool, where users can write queries and build dashboards. It is deployed in the public subnet of VPC, on two Zones with Load balancer to ensure service availability
-- *Logic tier*: Where data is calculated and queried, there are 2 EMR clusters, each taking on the role mentioned above. Both EMR clusters are deployed on EC2 with part of the computation performed on Spot instances to save costs, along with auto scaling capabilities that allow the system to automatically expand according to usage needs.
+- *Logic tier*: Where data is calculated and queried. There are 2 EMR clusters, one is used for calculation and data processing, the other is used for query engine, this makes it easy to maintain and expand depending on usage needs. Both EMR clusters are deployed on EC2 with part of the computation performed on Spot instances to save costs, along with auto scaling capabilities that allow the system to automatically expand according to usage needs.
 - *Data tier*: Where all system data is stored, including data in the data warehouse (Glue-S3) and application data in the database (RDS).
 
 ## Cost calculation <a name="cost_calculation"></a>
