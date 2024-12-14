@@ -17,6 +17,8 @@ description:  Hadoop MapReduce là một framework tính toán cho phép viết 
 3. [Sơ lược hoạt động trong chương trình MapReduce](#mapreduce)
 4. [Kết luận](#conclusion)
 
+> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
+
 ## Giới thiệu tổng quan <a name="introduction"></a>
 
 Trong bài viết trước mình đã giới thiệu về HDFS - Hệ thống File phân tán (bạn có thể xem lại [tại đây](/hdfs-he-thong-file-phan-tan/)). Với HDFS chúng ta có được một hệ thống có khả năng lưu trữ dữ liệu vô hạn (không bị phụ thuộc vào phần cứng). Để xử lý được lượng dữ liệu cực lớn, lưu trữ phân tán trên các node của HDFS, chúng ta cần một phương pháp tính toán gọi là MapReduce.

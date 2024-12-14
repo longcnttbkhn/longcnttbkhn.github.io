@@ -22,6 +22,7 @@ Before we get started, you need to note that this is just my suggestion based on
 4. [Cost calculation](#cost_calculation)
 5. [Conclusion](#conclusion)
 
+> :pray: *I am currently consulting, designing and implementing data analysis infrastructure, Data Warehouse, Lakehouse for individuals and organizations in need. You can see and try a system I have built [here](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Please contact me via email: <hoanglong180695@gmail.com>. Thank you!*
 
 ## Questions & Answers <a name="q&a"></a>
 

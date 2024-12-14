@@ -22,11 +22,11 @@ description: Trong bài viết này mình sẽ mô tả lại chi tiết quá tr
 6. [Hướng dẫn sử dụng cơ bản](#user-guide)
 7. [Kết luận](#conclusion)
 
+> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
+
 ## Mục tiêu <a name="target"></a>
 
 Trong bài viết này mình sẽ cài đặt Hadoop bản mới nhất (3.3.4 vào thời điểm viết bài này) trên 3 node Ubuntu 20.04 và OpenJdk11. Để thuận tiện cho việc setup và thử nghiệm mình sẽ sử dụng Docker để giả lập 3 node này.
-
----
 
 ## Cài đặt môi trường <a name="environment"></a>
 

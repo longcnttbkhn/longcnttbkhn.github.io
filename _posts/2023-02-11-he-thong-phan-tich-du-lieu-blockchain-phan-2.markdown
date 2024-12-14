@@ -25,6 +25,8 @@ Trong bài viết trước mình đã giới thiệu với các bạn một thi�
 7. [Automation](#automation)
 8. [Kết luận](#conclusion)
 
+> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
+
 ## Sơ lược về EVM Blockchain <a name="introduction"></a>
 
 Bitcoin cho chúng ta thấy phiên bản đầu tiên của Blockchain là một sổ cái phi tập trung (bạn có thể xem lại bài viết [tại đây](/huong-dan-co-ban-ve-bitcoin/)), nơi mà toàn bộ các giao dịch chuyển tiền được ghi lại. EVM Blockchain là thế hệ tiếp theo của Blockchain, nó bao gồm một lớp các chain ra đời sau này kể từ khi [Ethereum](https://ethereum.org/) được giới thiệu bao gồm rất nhiều chain phổ biến như: Ethereum, Binance Smart Chain, Polygon... (bạn có thể xem thêm trong danh sách [này](https://www.coincarp.com/vi/chainlist/)). Ethereum đã giúp cho Blockchain trở nên linh hoạt và đa dụng hơn thay vì chỉ có thể thực hiện các giao dịch chuyển tiền, mình sẽ tóm tắt lại một số điểm mới của EVM Blockchain như sau:

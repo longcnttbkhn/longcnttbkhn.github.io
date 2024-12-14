@@ -23,6 +23,8 @@ APC được thiết kế để crawl dữ liệu từ nhiều website mà khôn
 4. [Một số kinh nghiệm rút ra](#experience)
 5. [Kết luận](#conclusion)
 
+> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
+
 ## Giới thiệu tổng quan <a name="introduction"></a>
 Ý tưởng cho dự án này xuất hiện khi mình cần maintain một con Crawler dựa trên [Scrapy](https://scrapy.org/), thu thập dữ liệu từ các trang tin rao bất động sản, sử dụng *css selector* và *xpath* parser để trích rút các thông tin từ tin rao như địa chỉ, giá, diện tích, số phòng... Hệ thống đang có gặp một số vấn đề như sau:
 - Mỗi website được xử lý bằng 1 Spider với một bộ parser bóc tách dữ liệu riêng, nếu muốn thu thập thêm từ website khác thì phải code thêm Spider mới.

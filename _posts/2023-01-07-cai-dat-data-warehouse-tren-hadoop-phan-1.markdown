@@ -25,6 +25,8 @@ Trong hoạt động kinh doanh của mình, người chủ doanh nghiệp luôn
 8. [Cài đặt Airflow](#install_airflow)
 9. [Kết luận](#conclusion)
 
+> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
+
 ## Giới thiệu tổng quan <a name="introduction"></a>
 
 Theo định nghĩa từ [Oracle](https://www.oracle.com/database/what-is-a-data-warehouse/), Data Warehouse là một loại hệ thống quản trị dữ liệu được thiết kế để hỗ trợ cho các hoạt động phân tích và trí tuệ doanh nghiệp (Business Intelligence). Dữ liệu trong data warehouse là dữ liệu có cấu trúc giống như database tuy nhiên có một số khác biệt giữa 2 hệ thống này như sau:

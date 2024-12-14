@@ -47,6 +47,7 @@ sitemap: false
 <h2>Products</h2>
 
 <ul>
-	<li><a href="https://gianhadat.cenhomes.vn/index.html">Real Estate Estimate</a></li>
-	<li><a href="https://darenft.com/">Darenft</a></li>
+
+	<li><a href="https://gianhadat.cenhomes.vn/index.html" target="_blank">Real Estate Estimate</a></li>
+	<li><a href="https://docs.chainslake.io" target="_blank">Chainslake</a></li>
 </ul>

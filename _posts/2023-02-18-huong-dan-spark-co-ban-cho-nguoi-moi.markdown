@@ -20,6 +20,8 @@ Trong bài viết trước, mình đã giới thiệu với các bạn về mô 
 4. [Chạy chương trình Spark trên Hadoop cluster](#deploy)
 5. [Kết luận](#conclusion)
 
+> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
+
 ## Giới thiệu tổng quan <a name="introduction"></a>
 
 Spark là engine tính toán đa dụng, nhanh và phân tán, có khả năng xử lý được lượng dữ liệu khổng lồ song song và phân tán trên nhiều máy tính đồng thời. Dưới đây là sơ đồ mô tả hoạt động của một ứng dụng Spark khi chạy trên một cụm máy tính:

@@ -21,6 +21,8 @@ Tuy nhiên, để mà có thể sử dụng được hệ thống theo cách nà
 2. [Một số lưu ý](#text_note)
 3. [Kết luận](#conclusion)
 
+> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
+
 ## Hướng dẫn sử dụng <a name="user_instructions"></a>
 
 *Sonar* là Chat bot trong lĩnh vực crypto, được sử dụng để trả lời các câu hỏi về phân tích dữ liệu blockchain, với một số dạng dữ liệu được cung câp như hình dưới đây:
@@ -114,6 +116,7 @@ Một số câu hỏi phức tạp khác mà mình đã huấn luyện *Sonar* c
     text-align: center;
 "><img src="/assets/images/blog/bigdata/2024-11-24/query_9.png" alt="Query volume" width="550"></p>
 
+## 
 
 ## Một số lưu ý khi sử dụng <a name="text_note"></a>
 
@@ -124,5 +127,4 @@ Một số câu hỏi phức tạp khác mà mình đã huấn luyện *Sonar* c
 
 Trong bài viết này mình đã giới thiệu với các bạn một ví dụ về tích hợp Chatbot hỗ trợ cho hoạt động BI trên Data warehouse. Hẹn gặp lại các bạn trong các bài viết tiếp theo.
 
-:pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai Data warehouse cho các đơn vị có nhu cầu. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
 
