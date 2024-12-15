@@ -183,7 +183,7 @@ println(extractedData)
 
 ## Spellbook <a name="spellbook"></a>
 
-Sau khi lấy [source code]() của Spellbook về bạn tiến hành cài đặt theo hướng dẫn [tại đây](http://localhost:4000/cai-dat-data-warehouse-tren-hadoop-phan-1/#install_dbt), kiểm tra doc của Spellbook trên giao diện:
+Sau khi lấy [source code]() của Spellbook về bạn tiến hành cài đặt theo hướng dẫn [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/#install_dbt), kiểm tra doc của Spellbook trên giao diện:
 
 ![DBT Screen](/assets/images/blog/bigdata/2023-02-11/dbt-home-screen.png)
 
