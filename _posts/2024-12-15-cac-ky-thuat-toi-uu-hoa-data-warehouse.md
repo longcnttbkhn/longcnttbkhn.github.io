@@ -31,7 +31,7 @@ Cũng giống như Database, một Data warehouse không được tối ưu sẽ
 - Lượng dữ liệu thêm mới vào sẽ liên tục tăng lên theo thời gian, điều này do đặc điểm dữ liệu của Data warehouse là dữ liệu lịch sử, ghi lại sự thay đổi hoặc sự kiện, log... Trong khi đó ở Database, kích thước của bảng sẽ chỉ tăng lên đến một lượng nhất định sau đó sẽ duy trì ổn định hoặc tăng nhẹ, lúc này việc viết lại truy vấn và đánh index trên database sẽ đem lại hiệu quả.
 - Database phục vụ cho hoạt động hàng ngày, vì vậy có thể dễ dàng tối ưu hóa hoặc đánh index để tối ưu cho một số query nhất định. Còn Data warehouse phục vụ phân tích dữ liệu nên số lượng câu truy vấn rất nhiều và đa dạng, mọi câu truy vấn đều cần được tối ưu, do đó việc đánh index để tối ưu là không khả thi.
 
-Chính vì các lý do này mà việc tối ưu Data warehouse cần phải được quan tâm, xem xét cẩn thận ngay từ khâu thiết kế và tổ chức dữ liệu, chứ không phải đợi đến khi dữ liệu đã được đổ vào và phình ra rất lớn rồi mới tìm cách tối ưu thì khả năng cao đã muộn :pray:.
+Chính vì các lý do này mà việc tối ưu Data warehouse cần phải được quan tâm, xem xét cẩn thận ngay từ khâu thiết kế và tổ chức dữ liệu, chứ không phải đợi đến khi dữ liệu đã được đổ vào và phình ra rất lớn rồi mới tìm cách tối ưu thì khả năng cao là đã muộn :pray:.
 
 ## Phương pháp tối ưu data warehouse <a name="methodology"></a>
 
@@ -70,11 +70,11 @@ Do các bảng của mình sử dụng format [Delta](https://docs.delta.io/late
 
 __Ưu điểm__: Đây là một phương pháp đơn giản, dễ thực hiện, không mất thêm chi phí lưu trữ dữ liệu nhưng có thể đem lại hiệu quả rất tốt, đặc biệt đối với các câu truy vấn cần filter hoặc join theo các column đã được partition.\\
 __Nhược điểm__: Trong 1 bảng chỉ có thể thực hiện việc partition trên 1 hoặc 1 vài column có liên quan đến nhau ví dụ như `block_date`, `block_time`, `block_number` không thể thực hiện trên các column có nhiều khác biệt như `block_date` với `tx_hash`.\\
-__Kinh nghiệm__: Mỗi partition nên có kích thước vừa phải, quá lớn hoặc quá nhỏ đều không tốt.
+__Kinh nghiệm__: Mỗi partition nên có kích thước vừa phải, quá lớn hoặc quá nhỏ đều không tốt (có thể điều chỉnh bằng cấu hình `spark.sql.files.maxRecordsPerFile`).
 
 ## Xây dựng bảng trung gian <a name="intermediate-table">
 
-Bảng dữ liệu trung gian là các bảng dữ liệu được kết hợp và tổng hợp từ các bảng dữ liệu raw ban đầu nên có kích thước nhỏ hơn rất nhiều, điều này giúp việc truy vấn từ các bảng trung gian nhanh hơn rất nhiều.
+Bảng dữ liệu trung gian là các bảng dữ liệu được kết hợp và tổng hợp từ các bảng dữ liệu raw ban đầu, chúng thường có kích thước nhỏ hơn rất nhiều, điều này giúp cho các truy vấn trên bảng trung gian trở nên đơn giản và nhanh hơn so với khi thực hiện trên các bảng dữ liệu raw.
 
 __Ví dụ:__ Để biết 1 ví trong 1 ngày bất kỳ đã chuyển và nhận những token nào, số lượng bao nhiêu, thay vì việc thực hiện truy vấn trên bảng `ethereum_decoded.erc20_evt_transfer` mình đã xây dựng bảng trung gian `ethereum_balances.erc20_transfer_day` tổng hợp sự thay đổi số dư mỗi ngày của tất cả các token của tất cả các ví. Từ đó việc truy vấn trên bảng `ethereum_balances.erc20_transfer_day` nhanh hơn rất nhiều so với bảng bảng transfer ban đầu. Đồng thời từ bảng transfer day mình cùng tổng hợp được bảng `ethereum_balances.er20_native` chứa số dư cuối cùng của tất cả ví một cách dễ dàng hơn.
 
