@@ -22,8 +22,6 @@ Trong một bài viết trước, mình đã chia sẻ với các bạn những 
 5. [Tối ưu câu truy vấn](#optimize-query)
 6. [Kết luận](#conclusion)
 
-> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
-
 ## Tại sao cần tối ưu data warehouse?<a name="why"></a>
 
 Cũng giống như Database, một Data warehouse không được tối ưu sẽ dẫn đến việc các câu truy vấn chạy tốn nhiều thời gian, tốn nhiều chi phí tính toán thậm chí có thể không thực thi được. Nếu như ở Database chúng ta có thể thực hiện việc tối ưu bằng cách viết lại câu truy vấn tốt hơn, sử dụng thêm index, tuy nhiên với Data warehouse mọi chuyện không đơn giản như vậy vì một số nguyên nhân sau:

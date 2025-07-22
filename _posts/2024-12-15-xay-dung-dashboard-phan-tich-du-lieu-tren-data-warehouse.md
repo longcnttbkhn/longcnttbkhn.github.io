@@ -4,6 +4,7 @@ layout: post
 date: 2024-12-15 09:00:00 +0700
 image: /assets/images/blog/bigdata/2024-12-15/demo-dashboard.png
 headerImage: false
+published: false
 tag:
 - bigdata
 - blockchain
@@ -21,8 +22,6 @@ Tiếp tục series các bài viết chủ đề Data Warehouse, hôm nay chúng
 3. [Các bảng dữ liệu trong data warehouse](#tables)
 4. [Truy vấn dữ liệu, xây dựng và chia sẻ dashboard](#query-build-share)
 5. [Kết luận](#conclusion)
-
-> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
 
 ## Giới thiệu tổng quan về Metabase <a name="introduction"></a>
 

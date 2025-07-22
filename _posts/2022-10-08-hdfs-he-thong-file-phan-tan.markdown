@@ -19,7 +19,6 @@ HDFS (Hadoop Distributed File System) được coi là nền tảng của cả h
 3. [Thử nghiệm với HDFS](#experience)
 4. [Kết luận](#conclusion)
 
-> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
 
 ## Giới thiệu tổng quan <a name="introduction"></a>
 

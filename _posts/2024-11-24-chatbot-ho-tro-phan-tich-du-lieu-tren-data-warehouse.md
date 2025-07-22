@@ -4,6 +4,7 @@ layout: post
 date: 2024-11-24 09:00:00 +0700
 image: /assets/images/blog/bigdata/2024-11-24/intro.png
 headerImage: false
+published: false
 tag:
 - bigdata
 - blockchain
@@ -20,8 +21,6 @@ Tuy nhiên, để mà có thể sử dụng được hệ thống theo cách nà
 1. [Hướng dẫn sử dụng](#user_instructions)
 2. [Một số lưu ý](#text_note)
 3. [Kết luận](#conclusion)
-
-> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
 
 ## Hướng dẫn sử dụng <a name="user_instructions"></a>
 

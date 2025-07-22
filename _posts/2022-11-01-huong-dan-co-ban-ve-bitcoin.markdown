@@ -17,8 +17,6 @@ description: Bitcoin là đồng tiền điện tử đầu tiên và cũng là 
 3. [Một số điều cần lưu ý khi sử dụng Bitcoin](#note)
 4. [Kết luận](#conclusion)
 
-> :pray: *Hiện tại mình đang nhận tư vấn, thiết kế và triển khai hạ tầng phân tích dữ liệu, Data Warehouse, Lakehouse cho các cá nhân, đơn vị có nhu cầu. Bạn có thể xem và dùng thử một hệ thống mình đã build [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Các bạn vui lòng liên hệ với mình qua email: <hoanglong180695@gmail.com>. Mình xin cảm ơn!*
-
 ## Giới thiệu tổng quan <a name="introduction"></a>
 
 Bitcoin được giới thiệu lần đầu trong bài báo cùng tên của tác giả ẩn danh Satoshi Nakamoto, bạn có thể xem đầy đủ [tại đây][bitcoin-paper]. Mình sẽ tóm tắt lại các nội dung chính như sau:

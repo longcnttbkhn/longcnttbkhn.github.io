@@ -7,12 +7,12 @@ headerImage: false
 tag:
 - bigdata
 - blockchain
-category: blog
-author: Long Nguyen
+category: english
+author: Lake Nguyen
 description: From 2000$/month for infrastructure costs on AWS, I got a blockchain data warehouse like Dune Analyst. How I did it?
 ---
 
-Before we get started, you need to note that this is just my suggestion based on the minimum needs for the system to work, it takes more things and of course more money to make it work on production, however it would be a good starting point. Please contact me on Telegram @longnh1 if you have any question.
+Before we get started, you need to note that this is just my suggestion based on the minimum needs for the system to work, it takes more things and of course more money to make it work on production, however it would be a good starting point. 
 
 ## Content
 
@@ -21,8 +21,6 @@ Before we get started, you need to note that this is just my suggestion based on
 3. [Deployment infrastructure](#deployment_infrastructure)
 4. [Cost calculation](#cost_calculation)
 5. [Conclusion](#conclusion)
-
-> :pray: *I am currently consulting, designing and implementing data analysis infrastructure, Data Warehouse, Lakehouse for individuals and organizations in need. You can see and try a system I have built [here](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}. Please contact me via email: <hoanglong180695@gmail.com>. Thank you!*
 
 ## Questions & Answers <a name="q&a"></a>
 
@@ -49,7 +47,7 @@ Before we get started, you need to note that this is just my suggestion based on
 The figure above describes the system's component architecture and data flow. Now I'm going to show you the details of this system
 
 ### Data warehouse
-This is the infrastructure that stores all of the system's data, You can learn more about data warehouse in my article [here](/cai-dat-data-warehouse-tren-hadoop-phan-1/). 
+This is the infrastructure that stores all of the system's data, You can learn more about data warehouse in my article [here](/how-to-build-data-warehouse-on-hadoop-cluster-part-1/). 
 
 From a technical perspective, there are two points to note:
 - To deploy on AWS, I use Glue-S3, in which S3 will store data and Glue will store metadata information of tables in the warehouse. This allows me to store large amounts of data at low cost, plus Glue-S3 is also compatible with many query engines such as Trino, Athena, Pestro...
