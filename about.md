@@ -47,7 +47,16 @@ sitemap: false
 <h2>Products</h2>
 
 <ul>
-
+	<li><a href="https://chainslake.com" target="_blank">Chainslake</a>
+		<ul>
+			<li><a href="https://chainslake.com/@bitcoin" target="_blank">Bitcoin</a></li>
+			<li><a href="https://chainslake.com/@ethereum" target="_blank">Ethereum</a></li>
+			<li><a href="https://chainslake.com/@binance" target="_blank">Binance</a></li>
+			<li><a href="https://chainslake.com/@aave" target="_blank">Aave</a></li>
+			<li><a href="https://chainslake.com/@opensea" target="_blank">Opensea</a></li>
+			<li><a href="https://chainslake.com/@nftfi" target="_blank">NFTFi</a></li>
+			<li><a href="https://chainslake.com/@uniswap" target="_blank">Uniswap</a></li>
+		</ul>
+	</li>
 	<li><a href="https://gianhadat.cenhomes.vn/index.html" target="_blank">Real Estate Estimate</a></li>
-	<li><a href="https://docs.chainslake.io" target="_blank">Chainslake</a></li>
 </ul>

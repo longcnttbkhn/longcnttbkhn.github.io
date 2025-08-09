@@ -14,7 +14,7 @@ description: Chat bot hỗ trợ phân tích dữ liệu trên Data Warehouse.
 ---
 
 Trong các bài viết trước, mình đã hướng dẫn các bạn cách xây dựng Data warehouse trên nền tảng Hadoop và một số công nghệ khác. Sử dụng query engine Trino kết hợp với các công cụ trình diễn dữ liệu như Superset hoặc Metabase sẽ giúp chúng ta có thể dễ dàng truy vấn dữ liệu trong Data Warehouse để xây dựng các chart, dashboard phân tích, phục vụ cho hoạt động BI. \\
-Tuy nhiên, để mà có thể sử dụng được hệ thống theo cách này, người dùng vẫn cần có kiến thức và kỹ năng nhất định về SQL. Để giải quyết vấn đề này đồng thời hỗ trợ thêm cho các bạn DA trong quá trình truy vấn dữ liệu, mình đã huấn luyện một Chatbot từ ChatGPT và tích hợp vào Data Warehouse. Các bạn có thể dùng thử Chatbot *Sonar* của mình [tại đây](https://sonar.chainslake.io/){:target="_blank"}.
+Tuy nhiên, để mà có thể sử dụng được hệ thống theo cách này, người dùng vẫn cần có kiến thức và kỹ năng nhất định về SQL. Để giải quyết vấn đề này đồng thời hỗ trợ thêm cho các bạn DA trong quá trình truy vấn dữ liệu, mình đã huấn luyện một Chatbot từ ChatGPT và tích hợp vào Data Warehouse. Các bạn có thể dùng thử Chatbot *Sonar* của mình [tại đây](https://sonar.chainslake.com/){:target="_blank"}.
 
 ## Nội dung
 

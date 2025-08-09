@@ -14,7 +14,7 @@ description: Bài viết này sẽ giới thiệu cách sử dụng công cụ M
 ---
 
 Tiếp tục series các bài viết chủ đề Data Warehouse, hôm nay chúng ta sẽ đến với một nội dung khá là thú vị đó là xây dựng Dashboard phân tích dữ liệu trên Data warehouse. Xây dựng Dashboard phân tích dữ liệu là một trong những chức năng cơ bản nhất trong các hoạt động BI (Business Intelligence), giúp trực quan hóa dữ liệu dưới dạng các biểu đồ, từ đó giúp cho người dùng có thể dễ dàng hiểu và nhìn thấy các insight từ dữ liệu. \\
-Để minh họa cho bài viết thì mình sẽ sử dụng [Chainslake](https://metabase.chainslake.io){:target="_blank"}, một blockchain data warehouse do mình phát triển, cho phép người dùng truy vấn dữ liệu blockchain, xây dựng và chia sẻ các dashboard phân tích dữ liệu blockchain hoàn toàn miễn phí.
+Để minh họa cho bài viết thì mình sẽ sử dụng [Chainslake](https://metabase.chainslake.com){:target="_blank"}, một blockchain data warehouse do mình phát triển, cho phép người dùng truy vấn dữ liệu blockchain, xây dựng và chia sẻ các dashboard phân tích dữ liệu blockchain hoàn toàn miễn phí.
 
 ## Nội dung
 1. [Giới thiệu tổng quan về Metabase](#introduction) 
@@ -25,7 +25,7 @@ Tiếp tục series các bài viết chủ đề Data Warehouse, hôm nay chúng
 
 ## Giới thiệu tổng quan về Metabase <a name="introduction"></a>
 
-[Metabase](https://www.metabase.com/) là một công cụ BI cho phép truy vấn dữ liệu bằng ngôn ngữ SQL trên nhiều cơ sở dữ liệu và các SQL engine khác nhau thông qua các [plugins](https://www.metabase.com/docs/latest/databases/connecting), trình diễn kết quả truy vấn thành các bảng, biểu đồ, số liệu trên các dashboard phân tích, bạn có thể xem một dashboard demo của mình [tại đây](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}.
+[Metabase](https://www.metabase.com/) là một công cụ BI cho phép truy vấn dữ liệu bằng ngôn ngữ SQL trên nhiều cơ sở dữ liệu và các SQL engine khác nhau thông qua các [plugins](https://www.metabase.com/docs/latest/databases/connecting), trình diễn kết quả truy vấn thành các bảng, biểu đồ, số liệu trên các dashboard phân tích, bạn có thể xem một dashboard demo của mình [tại đây](https://metabase.chainslake.com/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}.
 
 Metabase có cả phiên bản Opensource với các chức năng cơ bản, có thể cài đặt trên hạ tầng có sẵn và bản Enterprise với các chức năng nâng cao có thể sử dụng trực tiếp trên cloud của Metabase hoặc tự host thông qua key bản quyền. Bạn có thể xem chi tiết [tại đây](https://www.metabase.com/pricing/){:target="_blank"}.
 
@@ -66,13 +66,13 @@ Truy cập vào `http://localhost:3000` bạn sẽ thấy giao diện khởi đ�
 
 ![Connect to Trino](/assets/images/blog/bigdata/2024-12-15/connect-trino.png)
 
-Sau khi cấu hình xong bạn `Exit admin` và vào kiểm tra xem đã có dữ liệu trong mục `Browser/Databases` hay chưa. Bạn có thể xem các bảng dữ liệu của Chainslake [tại đây](https://metabase.chainslake.io/browse/databases/3-chainslake){:target="_blank"}
+Sau khi cấu hình xong bạn `Exit admin` và vào kiểm tra xem đã có dữ liệu trong mục `Browser/Databases` hay chưa. Bạn có thể xem các bảng dữ liệu của Chainslake [tại đây](https://metabase.chainslake.com/browse/databases/3-chainslake){:target="_blank"}
 
 ![Chainslake data](/assets/images/blog/bigdata/2024-12-15/chainslake-data.png)
 
 ## Các bảng dữ liệu trong data warehouse <a name="tables"></a>
 
-Trong phần này mình sẽ mô tả sơ lược về các bảng dữ liệu trong data warehouse của [Chainslake](https://metabase.chainslake.io/browse/databases/3-chainslake){:target="_blank"} để có cơ sở cho việc viết truy vấn và build dashboard trong phần tiếp theo.
+Trong phần này mình sẽ mô tả sơ lược về các bảng dữ liệu trong data warehouse của [Chainslake](https://metabase.chainslake.com/browse/databases/3-chainslake){:target="_blank"} để có cơ sở cho việc viết truy vấn và build dashboard trong phần tiếp theo.
 
 Data warehouse của Chainslake bao gồm nhiều thư mục, mỗi thư mục gồm nhiều bảng có cùng chủ đề với nhau, cụ thể mình sẽ giới thiệu một số bảng và thư mục sau:
 
@@ -103,7 +103,7 @@ Data warehouse của Chainslake bao gồm nhiều thư mục, mỗi thư mục g
 
 ## Truy vấn dữ liệu, xây dựng và chia sẻ dashboard <a name="query-build-share"></a>
 
-Việc viết truy vấn và build dashboard trên Chainslake là khá đơn giản với nếu như bạn đã có kỹ năng về SQL. Mình có tạo sẵn một dashboard trong collection [Demo](https://metabase.chainslake.io/collection/61-demo){:target="_blank"} để bạn có thể hiểu và dễ dàng bắt đầu tạo ra các dashboard phân tích của riêng mình. 
+Việc viết truy vấn và build dashboard trên Chainslake là khá đơn giản với nếu như bạn đã có kỹ năng về SQL. Mình có tạo sẵn một dashboard trong collection [Demo](https://metabase.chainslake.com/collection/61-demo){:target="_blank"} để bạn có thể hiểu và dễ dàng bắt đầu tạo ra các dashboard phân tích của riêng mình. 
 
 ![Demo collection](/assets/images/blog/bigdata/2024-12-15/demo-collection.png)
 

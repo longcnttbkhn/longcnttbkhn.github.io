@@ -474,5 +474,16 @@ Bạn vào giao diện của airflow tại `http://localhost:8080/` và login v�
 
 Trong bài viết này mình đã giới thiệu với mọi người kiến trúc và cách cài đặt một Data Warehouse trên Hadoop, đến đây cũng đã khá dài rồi nên phần ứng dụng của DWH mình sẽ trình bày trong bài viết sau nhé. Hẹn gặp lại.
 
+:memo: Hiện tại mình đang phát triển một số kênh phân tích dữ liệu blockchain hàng ngày trên nền tảng [chainslake.com](https://chainslake.com):
+- [https://chainslake.com/@bitcoin](https://chainslake.com/@bitcoin)
+- [https://chainslake.com/@ethereum](https://chainslake.com/@ethereum)
+- [https://chainslake.com/@binance](https://chainslake.com/@binance)
+- [https://chainslake.com/@aave](https://chainslake.com/@aave)
+- [https://chainslake.com/@nftfi](https://chainslake.com/@nftfi)
+- [https://chainslake.com/@opensea](https://chainslake.com/@opensea)
+- [https://chainslake.com/@uniswap](https://chainslake.com/@uniswap)
+
+Chainslake là nền tảng phân tích dữ liệu blockchain hoàn toàn miễn phí, do mình phát triển dựa trên những kiến thức được trình bày trong chính blog này. Rất mong sự ủng hộ từ các bạn.
+
 [download_spark]: https://spark.apache.org/downloads.html
 [install_postgresql]: https://www.postgresql.org/download/linux/ubuntu/

@@ -12,7 +12,7 @@ author: Long Nguyen
 description: Trong bài viết này, mình sẽ chia sẻ với các bạn một số kỹ thuật tối ưu hóa mà mình đang áp dụng cho sản phẩm Chainslake, hi vọng đây sẽ là các gợi ý tốt để có thể áp dụng cho hệ thống của các bạn.
 ---
 
-Trong một bài viết trước, mình đã chia sẻ với các bạn những điểm giống và khác nhau giữa Database và Data warehouse bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/#introduction). Cũng giống như tối ưu Database, việc tối ưu Data warehouse cũng là một công việc cực kỳ quan trọng, quyết định đến hiệu năng của toàn bộ hệ thống. Tuy nhiên do sự khác biệt về chức năng và thiết kế giữa 2 hệ thống này nên việc tối ưu hóa cho Data warehouse cũng có nhiều điểm khác biệt so với Database. Trong bài viết này, mình sẽ chia sẻ với các bạn một số kỹ thuật tối ưu hóa mà mình đang áp dụng cho sản phẩm [Chainslake](https://metabase.chainslake.io){:target="_blank"}, hi vọng đây sẽ là các gợi ý tốt để có thể áp dụng cho hệ thống của các bạn.
+Trong một bài viết trước, mình đã chia sẻ với các bạn những điểm giống và khác nhau giữa Database và Data warehouse bạn có thể xem lại [tại đây](/cai-dat-data-warehouse-tren-hadoop-phan-1/#introduction). Cũng giống như tối ưu Database, việc tối ưu Data warehouse cũng là một công việc cực kỳ quan trọng, quyết định đến hiệu năng của toàn bộ hệ thống. Tuy nhiên do sự khác biệt về chức năng và thiết kế giữa 2 hệ thống này nên việc tối ưu hóa cho Data warehouse cũng có nhiều điểm khác biệt so với Database. Trong bài viết này, mình sẽ chia sẻ với các bạn một số kỹ thuật tối ưu hóa mà mình đang áp dụng cho sản phẩm [Chainslake](https://metabase.chainslake.com){:target="_blank"}, hi vọng đây sẽ là các gợi ý tốt để có thể áp dụng cho hệ thống của các bạn.
 
 ## Nội dung
 1. [Tại sao cần tối ưu Data warehouse?](#why) 
@@ -92,4 +92,4 @@ Ví dụ: thay vì việc tính số dư của một ví bằng cách lọc và 
 
 ## Kết luận <a name="conclusion"></a>
 
-Trong bài viết này, mình đã giới thiệu với các bạn một số kỹ thuật tối ưu hóa Data warehouse mà mình đã sử dụng khi xây dựng [Chainslake](https://metabase.chainslake.io){:target="_blank"}, hi vọng có thể giúp ích cho các bạn. Hẹn gặp lại các bạn trong các bài viết sau!
+Trong bài viết này, mình đã giới thiệu với các bạn một số kỹ thuật tối ưu hóa Data warehouse mà mình đã sử dụng khi xây dựng [Chainslake](https://metabase.chainslake.com){:target="_blank"}, hi vọng có thể giúp ích cho các bạn. Hẹn gặp lại các bạn trong các bài viết sau!

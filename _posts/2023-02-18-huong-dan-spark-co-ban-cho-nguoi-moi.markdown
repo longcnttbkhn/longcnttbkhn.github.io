@@ -128,3 +128,15 @@ Khi một ứng dụng Spark đang chạy ta có thể theo dõi nó trên giao 
 ## Kết luận <a name="conclusion"></a>
 
 Bài viết hôm nay mình sẽ dừng lại ở việc giới thiệu những khái niệm và kiến thức cơ bản nhất về Spark cùng với đó là những hướng dẫn ban đầu để cài đặt và làm quen với framework này. Các bài viết tiếp theo mình sẽ đi sâu hơn vào các nội dung liên quan đến lập trình Spark, sử dụng các module như Spark Sql, Spark Streaming... Hẹn gặp lại các bạn trong các bài viết tới nhé!
+
+
+:memo: Hiện tại mình đang phát triển một số kênh phân tích dữ liệu blockchain hàng ngày trên nền tảng [chainslake.com](https://chainslake.com):
+- [https://chainslake.com/@bitcoin](https://chainslake.com/@bitcoin)
+- [https://chainslake.com/@ethereum](https://chainslake.com/@ethereum)
+- [https://chainslake.com/@binance](https://chainslake.com/@binance)
+- [https://chainslake.com/@aave](https://chainslake.com/@aave)
+- [https://chainslake.com/@nftfi](https://chainslake.com/@nftfi)
+- [https://chainslake.com/@opensea](https://chainslake.com/@opensea)
+- [https://chainslake.com/@uniswap](https://chainslake.com/@uniswap)
+
+Chainslake là nền tảng phân tích dữ liệu blockchain hoàn toàn miễn phí, do mình phát triển dựa trên những kiến thức được trình bày trong chính blog này. Rất mong sự ủng hộ từ các bạn.

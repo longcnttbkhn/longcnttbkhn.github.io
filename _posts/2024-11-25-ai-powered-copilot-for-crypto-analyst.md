@@ -34,7 +34,7 @@ The advantage of products in this group is to provide a general solution for use
 
 We are researching and developing a new product that can balance the pros and cons of both of these product groups. By combining a general data platform with a specially trained AI Chatbot, we have created:
 
-- [Sonar](https://sonar.chainslake.io/){:target="_blank"} - an AI powered copilot for crypto analysis.
+- [Sonar](https://sonar.chainslake.com/){:target="_blank"} - an AI powered copilot for crypto analysis.
 
 
 ## Contents

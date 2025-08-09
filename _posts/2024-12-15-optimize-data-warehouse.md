@@ -12,7 +12,7 @@ author: Lake Nguyen
 description: In this article, I will share with you some optimization techniques that I am applying to the Chainslake product, hopefully these will be good suggestions to apply to your system.
 ---
 
-In a previous article, I shared with you the similarities and differences between Database and Data warehouse, you can review [here](/how-to-build-data-warehouse-on-hadoop-cluster-part-1/#introduction). Just like optimizing Database, optimizing Data warehouse is also an extremely important job, determining the performance of the entire system. However, due to the differences in function and design between these two systems, optimizing Data warehouse is also very different from Database. In this article, I will share with you some optimization techniques that I am applying to the product [Chainslake](https://metabase.chainslake.io){:target="_blank"}, hopefully these will be good suggestions to apply to your system.
+In a previous article, I shared with you the similarities and differences between Database and Data warehouse, you can review [here](/how-to-build-data-warehouse-on-hadoop-cluster-part-1/#introduction). Just like optimizing Database, optimizing Data warehouse is also an extremely important job, determining the performance of the entire system. However, due to the differences in function and design between these two systems, optimizing Data warehouse is also very different from Database. In this article, I will share with you some optimization techniques that I am applying to the product [Chainslake](https://metabase.chainslake.com){:target="_blank"}, hopefully these will be good suggestions to apply to your system.
 
 ## Content
 1. [Why do we need to optimize Data warehouse?](#why)
@@ -93,4 +93,4 @@ For example, instead of calculating the balance of a wallet by filtering and agg
 
 ## Conclusion <a name="conclusion"></a>
 
-In this article, I introduced to you some Data warehouse optimization techniques that I used when building [Chainslake](https://metabase.chainslake.io){:target="_blank"}, hope it can help you. See you in the next articles!
+In this article, I introduced to you some Data warehouse optimization techniques that I used when building [Chainslake](https://metabase.chainslake.com){:target="_blank"}, hope it can help you. See you in the next articles!

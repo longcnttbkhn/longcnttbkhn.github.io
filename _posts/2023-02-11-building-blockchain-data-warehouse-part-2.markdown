@@ -12,7 +12,7 @@ author: Lake Nguyen
 description: The article introduces the blockchain data analysis system based on Hadoop Data warehouse infrastructure.
 ---
 
-In the previous article, I introduced to you a design and installation of a Data Warehouse based on the Hadoop platform and some Opensource technologies, you can review [here](/how-to-build-data-warehouse-on-hadoop-cluster-part-1/). In this article, I will use this DWH to apply to a specific problem of analyzing Blockchain data, you can try it in [hear](https://metabase.chainslake.io/){:target="_blank"}. Because the content of the article will focus on the data analysis system, I will not go too deep into Blockchain technology but will only present issues related to EVM Blockchain data to explain the design of the system. 
+In the previous article, I introduced to you a design and installation of a Data Warehouse based on the Hadoop platform and some Opensource technologies, you can review [here](/how-to-build-data-warehouse-on-hadoop-cluster-part-1/). In this article, I will use this DWH to apply to a specific problem of analyzing Blockchain data, you can try it in [hear](https://metabase.chainslake.com/){:target="_blank"}. Because the content of the article will focus on the data analysis system, I will not go too deep into Blockchain technology but will only present issues related to EVM Blockchain data to explain the design of the system. 
 
 # Contents
 1. [EVM Blockchain Overview](#introduction)

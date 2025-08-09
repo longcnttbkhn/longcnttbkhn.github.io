@@ -200,3 +200,14 @@ Ta thấy rằng model này đang phụ thuộc vào các datasource (green) vì
 ## Kết luận <a name="conclusion"></a>
 
 Bài viết hôm nay đến đây thôi, mình sẽ tiếp tục viết thêm nội dung cho cho bài viết này trong các lần cập nhật tiếp theo nhé. Hẹn gặp lại các bạn
+
+:memo: Hiện tại mình đang phát triển một số kênh phân tích dữ liệu blockchain hàng ngày trên nền tảng [chainslake.com](https://chainslake.com):
+- [https://chainslake.com/@bitcoin](https://chainslake.com/@bitcoin)
+- [https://chainslake.com/@ethereum](https://chainslake.com/@ethereum)
+- [https://chainslake.com/@binance](https://chainslake.com/@binance)
+- [https://chainslake.com/@aave](https://chainslake.com/@aave)
+- [https://chainslake.com/@nftfi](https://chainslake.com/@nftfi)
+- [https://chainslake.com/@opensea](https://chainslake.com/@opensea)
+- [https://chainslake.com/@uniswap](https://chainslake.com/@uniswap)
+
+Chainslake là nền tảng phân tích dữ liệu blockchain hoàn toàn miễn phí, do mình phát triển dựa trên những kiến thức được trình bày trong chính blog này. Rất mong sự ủng hộ từ các bạn.

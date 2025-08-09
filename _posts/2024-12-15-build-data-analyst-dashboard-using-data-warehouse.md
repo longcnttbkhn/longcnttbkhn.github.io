@@ -14,7 +14,7 @@ description: This article will introduce how to use the Metabase tool to build a
 ---
 
 Continuing the series of articles on the Data Warehouse topic, today we will come to a quite interesting content which is building a Data Analysis Dashboard on the Data warehouse. Building a Data Analysis Dashboard is one of the most basic functions in BI (Business Intelligence) activities, helping to visualize data in the form of charts, thereby helping users to easily understand and see insights from the data. \\
-You can use [Chainslake](https://metabase.chainslake.io){:target="_blank"}, a blockchain data warehouse that allows users to query blockchain data, build and share blockchain data analysis dashboards completely free of charge.
+You can use [Chainslake](https://metabase.chainslake.com){:target="_blank"}, a blockchain data warehouse that allows users to query blockchain data, build and share blockchain data analysis dashboards completely free of charge.
 
 ## Contents
 1. [Overview of Metabase](#introduction)
@@ -25,7 +25,7 @@ You can use [Chainslake](https://metabase.chainslake.io){:target="_blank"}, a bl
 
 ## Overview of Metabase <a name="introduction"></a>
 
-[Metabase](https://www.metabase.com/) is a BI tool that allows querying data using SQL language on many different databases and SQL engines through [plugins](https://www.metabase.com/docs/latest/databases/connecting), presenting query results into tables, charts, data on analytical dashboards, you can see a demo dashboard of mine [here](https://metabase.chainslake.io/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}.
+[Metabase](https://www.metabase.com/) is a BI tool that allows querying data using SQL language on many different databases and SQL engines through [plugins](https://www.metabase.com/docs/latest/databases/connecting), presenting query results into tables, charts, data on analytical dashboards, you can see a demo dashboard of mine [here](https://metabase.chainslake.com/public/dashboard/ac9dbee4-af29-4ba8-b494-eae69f4ee835){:target="_blank"}.
 
 Metabase has both an Opensource version with basic functions that can be installed on existing infrastructure and an Enterprise version with advanced functions that can be used directly on Metabase's cloud or self-hosted via a license key. You can see details [here](https://www.metabase.com/pricing/){:target="_blank"}.
 
@@ -66,13 +66,13 @@ To connect to Trino, go to `Admin settings`, select the `Databases` tab, select 
 
 ![Connect to Trino](/assets/images/blog/bigdata/2024-12-15/connect-trino.png)
 
-After configuring, `Exit admin` and check if there is data in `Browser/Databases`. You can see Chainslake's data tables [here](https://metabase.chainslake.io/browse/databases/3-chainslake){:target="_blank"}
+After configuring, `Exit admin` and check if there is data in `Browser/Databases`. You can see Chainslake's data tables [here](https://metabase.chainslake.com/browse/databases/3-chainslake){:target="_blank"}
 
 ![Chainslake data](/assets/images/blog/bigdata/2024-12-15/chainslake-data.png)
 
 ## Data tables in the data warehouse <a name="tables"></a>
 
-In this section, I will briefly describe the data tables in the data warehouse of [Chainslake](https://metabase.chainslake.io/browse/databases/3-chainslake){:target="_blank"} to have a basis for writing queries and building dashboards in the next section.
+In this section, I will briefly describe the data tables in the data warehouse of [Chainslake](https://metabase.chainslake.com/browse/databases/3-chainslake){:target="_blank"} to have a basis for writing queries and building dashboards in the next section.
 
 Chainslake's data warehouse includes many folders, each folder includes many tables with the same topic, specifically I will introduce some of the following tables and folders:
 
@@ -103,7 +103,7 @@ Chainslake's data warehouse includes many folders, each folder includes many tab
 
 ## Query data, build and share dashboards <a name="query-build-share"></a>
 
-Writing queries and building dashboards on Chainslake is quite simple if you already have SQL skills. I have created a dashboard in the collection [Demo](https://metabase.chainslake.io/collection/61-demo){:target="_blank"} so you can understand and easily start creating your own analytical dashboards.
+Writing queries and building dashboards on Chainslake is quite simple if you already have SQL skills. I have created a dashboard in the collection [Demo](https://metabase.chainslake.com/collection/61-demo){:target="_blank"} so you can understand and easily start creating your own analytical dashboards.
 
 ![Demo collection](/assets/images/blog/bigdata/2024-12-15/demo-collection.png)
 
