@@ -307,6 +307,17 @@ $ $HADOOP_HOME/sbin/stop-all.sh
 
 Như vậy trong bài viết này mình đã giới thiệu đầy đủ về quá trình cài Hadoop của mình, các bạn làm theo có vấn đề gì thì cố gắng tự giải quyết nha :). Hẹn gặp lại trong bài viết sau.
 
+:memo: Hiện tại mình đang phát triển một số kênh phân tích dữ liệu blockchain hàng ngày trên nền tảng [chainslake.com](https://chainslake.com):
+- [https://chainslake.com/@bitcoin](https://chainslake.com/@bitcoin)
+- [https://chainslake.com/@ethereum](https://chainslake.com/@ethereum)
+- [https://chainslake.com/@binance](https://chainslake.com/@binance)
+- [https://chainslake.com/@aave](https://chainslake.com/@aave)
+- [https://chainslake.com/@nftfi](https://chainslake.com/@nftfi)
+- [https://chainslake.com/@opensea](https://chainslake.com/@opensea)
+- [https://chainslake.com/@uniswap](https://chainslake.com/@uniswap)
+
+Chainslake là nền tảng phân tích dữ liệu blockchain hoàn toàn miễn phí, do mình phát triển dựa trên những kiến thức được trình bày trong chính blog này. Rất mong sự ủng hộ từ các bạn.
+
 [apache-hadoop]: https://hadoop.apache.org/
 [hdp]: https://docs.cloudera.com/HDPDocuments/
 [docker]: https://docs.docker.com/engine/install/
