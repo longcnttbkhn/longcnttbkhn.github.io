@@ -13,6 +13,8 @@ description: Tiếp tục series các bài viết về chủ đề Bigdata, hôm
 
 Trong bài viết trước, mình đã giới thiệu với các bạn về mô hình tính toán [MapReduce](/mapreduce-xu-ly-du-lieu-phan-tan/) cho phép có thể xử lý lượng dữ liệu lớn được lưu trữ trên nhiều máy tính. Tuy nhiên mô hình MapReduce có một nhược điểm là nó liên tục phải đọc ghi dữ liệu từ ổ đĩa cứng, điều này làm cho chương trình MapReduce trở nên chậm chạp. Để giải quyết vấn đề này, Spark đã ra đời dựa trên ý tưởng rằng: dữ liệu chỉ cần đọc 1 lần từ input và ghi 1 lần ra output, trong suốt quá trình xử lý dữ liệu trung gian sẽ được nằm trên bộ nhớ thay vì phải liên tục đọc ghi từ ổ đĩa cứng từ đó giúp cải thiện đáng kể hiệu năng so với MapReduce. Thực nghiệm cho thấy Spark có thể xử lý nhanh hơn tới 100 lần so với MapReduce.
 
+Trước khi vào nội dung của bài viết mình xin phép mọi người 1 phút. Hiện tại mình đang phát triển nền tảng phân tích dữ liệu và chia sẻ Insight Blockchain có tên là [chainslake](https://chainslake.com/public/local). Mục tiêu của mình là xây dựng cộng đồng chuyên gia phân tích dữ liệu Blockchain tại Việt Nam, cùng nhau khai thác để giải quyết các bài toán về phân tích, tìm kiếm Insight, truy vết giao dịch... Đây là link [tài liệu](https://chainslake.github.io/hoc-phan-tich-du-lieu-lam-insight-blockchain-cung-chainslake/) của dự án, rất mong nhận được sự ủng hộ từ các bạn. 
+
 ## Nội dung
 1. [Giới thiệu tổng quan](#introduction)
 2. [Cài đặt môi trường phát triển](#install)
@@ -128,15 +130,3 @@ Khi một ứng dụng Spark đang chạy ta có thể theo dõi nó trên giao 
 ## Kết luận <a name="conclusion"></a>
 
 Bài viết hôm nay mình sẽ dừng lại ở việc giới thiệu những khái niệm và kiến thức cơ bản nhất về Spark cùng với đó là những hướng dẫn ban đầu để cài đặt và làm quen với framework này. Các bài viết tiếp theo mình sẽ đi sâu hơn vào các nội dung liên quan đến lập trình Spark, sử dụng các module như Spark Sql, Spark Streaming... Hẹn gặp lại các bạn trong các bài viết tới nhé!
-
-
-:memo: Hiện tại mình đang phát triển một số kênh phân tích dữ liệu blockchain hàng ngày trên nền tảng [chainslake.com](https://chainslake.com):
-- [https://chainslake.com/@bitcoin](https://chainslake.com/@bitcoin)
-- [https://chainslake.com/@ethereum](https://chainslake.com/@ethereum)
-- [https://chainslake.com/@binance](https://chainslake.com/@binance)
-- [https://chainslake.com/@aave](https://chainslake.com/@aave)
-- [https://chainslake.com/@nftfi](https://chainslake.com/@nftfi)
-- [https://chainslake.com/@opensea](https://chainslake.com/@opensea)
-- [https://chainslake.com/@uniswap](https://chainslake.com/@uniswap)
-
-Chainslake là nền tảng phân tích dữ liệu blockchain hoàn toàn miễn phí, do mình phát triển dựa trên những kiến thức được trình bày trong chính blog này. Rất mong sự ủng hộ từ các bạn.
